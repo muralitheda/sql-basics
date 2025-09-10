@@ -1,7 +1,6 @@
 ![](images/sql.png)
 
 
-````markdown
 # DDL & DML Sample
 
 ## Purpose
@@ -12,7 +11,6 @@ It sets up the environment for running queries later.
 CREATE DATABASE learning;
 USE learning;
 
--- Define Departments Table
 CREATE TABLE departments (
     department_id integer(4),
     department_name varchar(30) NOT NULL,
@@ -20,7 +18,6 @@ CREATE TABLE departments (
     location_id integer(4)
 );
 
--- Define Employees Table
 CREATE TABLE employees (
     employee_id integer(6),
     first_name varchar(20),
@@ -35,17 +32,40 @@ CREATE TABLE employees (
     department_id integer(4)
 );
 
--- Insert into departments (sample records)
+-- Insert into departments
 INSERT INTO departments VALUES (10, 'Administration', 200, 1700);
 INSERT INTO departments VALUES (20, 'Marketing', 201, 1800);
-...
+INSERT INTO departments VALUES (30, 'Purchasing', 114, 1700);
+INSERT INTO departments VALUES (40, 'Human Resources', 203, 2400);
+INSERT INTO departments VALUES (50, 'Shipping', 121, 1500);
+INSERT INTO departments VALUES (60, 'IT', 103, 1400);
+INSERT INTO departments VALUES (70, 'Public Relations', 204, 2700);
+INSERT INTO departments VALUES (80, 'Sales', 145, 2500);
+INSERT INTO departments VALUES (90, 'Executive', 100, 1700);
+INSERT INTO departments VALUES (100, 'Finance', 108, 1700);
+INSERT INTO departments VALUES (110, 'Accounting', 205, 1700);
+INSERT INTO departments VALUES (120, 'Treasury', NULL, 1700);
+INSERT INTO departments VALUES (130, 'Corporate Tax', NULL, 1700);
+INSERT INTO departments VALUES (140, 'Control And Credit', NULL, 1700);
+INSERT INTO departments VALUES (150, 'Shareholder Services', NULL, 1700);
+INSERT INTO departments VALUES (160, 'Benefits', NULL, 1700);
+INSERT INTO departments VALUES (170, 'Manufacturing', NULL, 1700);
+INSERT INTO departments VALUES (180, 'Construction', NULL, 1700);
+INSERT INTO departments VALUES (190, 'Contracting', NULL, 1700);
+INSERT INTO departments VALUES (200, 'Operations', NULL, 1700);
+INSERT INTO departments VALUES (210, 'IT Support', NULL, 1700);
+INSERT INTO departments VALUES (220, 'NOC', NULL, 1700);
+INSERT INTO departments VALUES (230, 'IT Helpdesk', NULL, 1700);
+INSERT INTO departments VALUES (240, 'Government Sales', NULL, 1700);
+INSERT INTO departments VALUES (250, 'Retail Sales', NULL, 1700);
+INSERT INTO departments VALUES (260, 'Recruiting', NULL, 1700);
 INSERT INTO departments VALUES (270, 'Payroll', NULL, 1700);
 
--- Insert into employees (sample records)
+-- Insert into employees (sample)
 INSERT INTO employees VALUES (100, 'Steven', 'King', 'SKING', '515.123.4567', '1987-05-01', 'AD_PRES', 24000, NULL, NULL, 90);
 INSERT INTO employees VALUES (101, 'Neena', 'Kochhar', 'NKOCHHAR', '515.123.4568', '1989-06-05', 'AD_VP', 17000, NULL, 100, 90);
-...
-````
+INSERT INTO employees VALUES (102, 'Lex', 'De Haan', 'LDEHAAN', '515.123.4569', '1989-06-05', 'AD_VP', 17000, NULL, 100, 90);
+```
 
 ---
 
@@ -315,4 +335,3 @@ FROM (
 )
 WHERE company = 'Toyota';
 ```
-
