@@ -1,14 +1,18 @@
 ![](images/sql.png)
 
-Here’s your content neatly formatted in **Markdown (MD)** with proper sectioning and fenced SQL code blocks:
 
-
+````markdown
 # DDL & DML Sample
+
+## Purpose
+This section defines the **database schema** (DDL) and inserts sample data (DML) for departments and employees.  
+It sets up the environment for running queries later.
 
 ```sql
 CREATE DATABASE learning;
 USE learning;
 
+-- Define Departments Table
 CREATE TABLE departments (
     department_id integer(4),
     department_name varchar(30) NOT NULL,
@@ -16,6 +20,7 @@ CREATE TABLE departments (
     location_id integer(4)
 );
 
+-- Define Employees Table
 CREATE TABLE employees (
     employee_id integer(6),
     first_name varchar(20),
@@ -30,39 +35,15 @@ CREATE TABLE employees (
     department_id integer(4)
 );
 
--- Insert into departments
+-- Insert into departments (sample records)
 INSERT INTO departments VALUES (10, 'Administration', 200, 1700);
 INSERT INTO departments VALUES (20, 'Marketing', 201, 1800);
-INSERT INTO departments VALUES (30, 'Purchasing', 114, 1700);
-INSERT INTO departments VALUES (40, 'Human Resources', 203, 2400);
-INSERT INTO departments VALUES (50, 'Shipping', 121, 1500);
-INSERT INTO departments VALUES (60, 'IT', 103, 1400);
-INSERT INTO departments VALUES (70, 'Public Relations', 204, 2700);
-INSERT INTO departments VALUES (80, 'Sales', 145, 2500);
-INSERT INTO departments VALUES (90, 'Executive', 100, 1700);
-INSERT INTO departments VALUES (100, 'Finance', 108, 1700);
-INSERT INTO departments VALUES (110, 'Accounting', 205, 1700);
-INSERT INTO departments VALUES (120, 'Treasury', NULL, 1700);
-INSERT INTO departments VALUES (130, 'Corporate Tax', NULL, 1700);
-INSERT INTO departments VALUES (140, 'Control And Credit', NULL, 1700);
-INSERT INTO departments VALUES (150, 'Shareholder Services', NULL, 1700);
-INSERT INTO departments VALUES (160, 'Benefits', NULL, 1700);
-INSERT INTO departments VALUES (170, 'Manufacturing', NULL, 1700);
-INSERT INTO departments VALUES (180, 'Construction', NULL, 1700);
-INSERT INTO departments VALUES (190, 'Contracting', NULL, 1700);
-INSERT INTO departments VALUES (200, 'Operations', NULL, 1700);
-INSERT INTO departments VALUES (210, 'IT Support', NULL, 1700);
-INSERT INTO departments VALUES (220, 'NOC', NULL, 1700);
-INSERT INTO departments VALUES (230, 'IT Helpdesk', NULL, 1700);
-INSERT INTO departments VALUES (240, 'Government Sales', NULL, 1700);
-INSERT INTO departments VALUES (250, 'Retail Sales', NULL, 1700);
-INSERT INTO departments VALUES (260, 'Recruiting', NULL, 1700);
+...
 INSERT INTO departments VALUES (270, 'Payroll', NULL, 1700);
 
--- Insert into employees (sample)
+-- Insert into employees (sample records)
 INSERT INTO employees VALUES (100, 'Steven', 'King', 'SKING', '515.123.4567', '1987-05-01', 'AD_PRES', 24000, NULL, NULL, 90);
 INSERT INTO employees VALUES (101, 'Neena', 'Kochhar', 'NKOCHHAR', '515.123.4568', '1989-06-05', 'AD_VP', 17000, NULL, 100, 90);
-INSERT INTO employees VALUES (102, 'Lex', 'De Haan', 'LDEHAAN', '515.123.4569', '1989-06-05', 'AD_VP', 17000, NULL, 100, 90);
 ...
 ````
 
@@ -70,7 +51,14 @@ INSERT INTO employees VALUES (102, 'Lex', 'De Haan', 'LDEHAAN', '515.123.4569', 
 
 # DQL Queries
 
+These queries demonstrate **different SQL operations** including joins, subqueries, ranking, analytical queries, and views.
+
+---
+
 ### 1. Self Join
+
+**Description:** Find employees and their managers within the same table.
+**Purpose:** To show hierarchical relationships in the `employees` table.
 
 ```sql
 SELECT e1.last_name || ' works for ' || e2.last_name "employees and Their Managers",
@@ -82,7 +70,12 @@ JOIN employees e2
 ORDER BY e1.last_name;
 ```
 
+---
+
 ### 2. Left Outer Join
+
+**Description:** Returns all departments and employees (if any) in each department.
+**Purpose:** Ensures departments without employees are still displayed.
 
 ```sql
 SELECT d.department_id, e.last_name
@@ -92,7 +85,12 @@ LEFT OUTER JOIN employees e
 ORDER BY d.department_id, e.last_name;
 ```
 
+---
+
 ### 3. Right Outer Join
+
+**Description:** Returns all employees and their department details (if available).
+**Purpose:** Ensures employees are shown even if they are not assigned to a department.
 
 ```sql
 SELECT d.department_id, e.last_name
@@ -103,11 +101,17 @@ ORDER BY d.department_id, e.last_name;
 ```
 
 ```sql
+-- Deleting department with ID 100
 DELETE FROM departments
 WHERE department_id = 100;
 ```
 
+---
+
 ### 4. Full Outer Join
+
+**Description:** Combines results of left and right joins.
+**Purpose:** Shows all departments and employees, even if no match exists.
 
 ```sql
 SELECT d.department_id, e.last_name
@@ -121,7 +125,12 @@ RIGHT OUTER JOIN employees e
     ON d.department_id = e.department_id;
 ```
 
+---
+
 ### 5. Sub Query Example
+
+**Description:** Select employees **not** in departments located at `location_id = 1700`.
+**Purpose:** Demonstrates filtering using a subquery.
 
 ```sql
 SELECT *
@@ -134,7 +143,12 @@ WHERE department_id NOT IN (
 ORDER BY last_name;
 ```
 
+---
+
 ### 6. Top 10 Salary Employees
+
+**Description:** Finds the top 10 employees based on salary.
+**Purpose:** Demonstrates ranking with `RANK()` and filtering top N rows.
 
 ```sql
 SELECT *
@@ -145,7 +159,12 @@ FROM (
 WHERE rn < 11;
 ```
 
+---
+
 ### 7. Ranking Functions
+
+**Description:** Demonstrates `RANK`, `ROW_NUMBER`, and `DENSE_RANK` on employees based on hire date.
+**Purpose:** Useful for analytics like employee seniority or ranking.
 
 ```sql
 SELECT employee_id, first_name, job_id, hire_date, salary,
@@ -155,7 +174,12 @@ SELECT employee_id, first_name, job_id, hire_date, salary,
 FROM employees;
 ```
 
+---
+
 ### 8. View Example
+
+**Description:** Creates a reusable view joining employees and departments.
+**Purpose:** Simplifies reporting and query reuse.
 
 ```sql
 CREATE OR REPLACE VIEW emp_details_view AS
@@ -169,7 +193,12 @@ INNER JOIN departments d
     ON e.department_id = d.department_id;
 ```
 
+---
+
 ### 9. Sub Queries (Single Row)
+
+**Description:** Returns departments matching one subquery result.
+**Purpose:** Filters with a **single-value subquery**.
 
 ```sql
 SELECT *
@@ -181,7 +210,12 @@ WHERE department_name = (
 );
 ```
 
+---
+
 ### 10. Sub Queries (Multiple Rows)
+
+**Description:** Returns departments matching multiple department names.
+**Purpose:** Uses `IN` clause with subqueries.
 
 ```sql
 SELECT *
@@ -194,7 +228,12 @@ WHERE department_name IN (
 );
 ```
 
+---
+
 ### 11. Sub Queries (Multiple Columns)
+
+**Description:** Filters based on both `department_id` and `department_name`.
+**Purpose:** Shows how to handle **multi-column conditions** in subqueries.
 
 ```sql
 SELECT *
@@ -207,7 +246,12 @@ WHERE (department_id, department_name) IN (
 );
 ```
 
+---
+
 ### 12. Inline View
+
+**Description:** Uses a subquery inside `FROM` to find minimum salary per department.
+**Purpose:** Useful for comparisons and analytics.
 
 ```sql
 SELECT e.employee_id, a.department_id, e.last_name, e.salary, a.min_sal
@@ -219,7 +263,12 @@ WHERE e.department_id = a.department_id
 ORDER BY e.department_id, e.salary DESC;
 ```
 
+---
+
 ### 13. Top-N Analysis
+
+**Description:** Fetches top 5 highest-paid employees.
+**Purpose:** Demonstrates use of `ROWNUM` for pagination or ranking.
 
 ```sql
 SELECT *
@@ -231,7 +280,12 @@ FROM (
 WHERE ROWNUM < 6;
 ```
 
+---
+
 ### 14. Analytical Queries
+
+**Description:** Demonstrates advanced analytics with ranking, row numbering, partitioning.
+**Purpose:** Useful for **business insights, leaderboards, and reporting**.
 
 ```sql
 SELECT NAME, company, power,
@@ -252,17 +306,6 @@ WHERE NAME = 'Prius' AND Row_Number = 1;
 ```
 
 ```sql
-WITH cte AS (
-    SELECT NAME, company, power,
-           RANK() OVER(ORDER BY power DESC) AS RANK,
-           ROW_NUMBER() OVER(ORDER BY power DESC) AS Row_Number
-    FROM cars1
-)
-SELECT *
-FROM cte;
-```
-
-```sql
 SELECT *
 FROM (
     SELECT NAME, company, power,
@@ -272,7 +315,4 @@ FROM (
 )
 WHERE company = 'Toyota';
 ```
-
-
-
 
