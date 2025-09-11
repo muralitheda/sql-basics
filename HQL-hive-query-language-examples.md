@@ -261,10 +261,6 @@ FROM payments
 WHERE paymentdate = '2023-10-21';
 ```
 
-Got it 👍 — you want me to format everything you shared into **Markdown (MD)** starting from **Question 9**, and include the **full SQL + notes + results** without skipping anything.
-
-Here’s the properly formatted version:
-
 ---
 
 ### **Q9. Show the customer info who made the very first payment and last payment to our company? or the very first customer of the company?**
