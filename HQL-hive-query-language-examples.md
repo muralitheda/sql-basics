@@ -991,3 +991,286 @@ lateral view posexplode(pagenavigation) exploded_tbl as idx, pgnavigation_column
 
 ---
 
+
+### **Q37. Why is ORDER BY costly in Hive? How can you avoid using it?**
+
+**Concept:**
+
+* `ORDER BY` → Single reducer → Performance bottleneck.
+* Alternatives:
+
+  * **DISTRIBUTE BY + SORT BY** → Parallel sort with multiple reducers.
+  * **CLUSTER BY** → Equivalent to `DISTRIBUTE BY + SORT BY` on same columns.
+* If only top records needed → use `LIMIT`.
+
+**Example:**
+
+```sql
+set mapred.reduce.tasks=3;
+
+-- Costly: single reducer
+select * from payments order by customernumber, amount;
+
+-- Efficient: multiple reducers
+select * from payments 
+distribute by customernumber 
+sort by customernumber, amount;
+
+-- Equivalent shortcut
+select * from payments cluster by customernumber, amount;
+
+-- Fetch only top N
+select * from payments order by customernumber, amount limit 100;
+```
+
+---
+
+### **Q38. How to split and join a string in Hive?**
+
+**Concept:**
+
+* `split(string, delimiter)` → splits into array.
+* `concat_ws(delimiter, col1, col2, …)` → joins values with delimiter.
+
+**Example:**
+
+```sql
+select 
+    split("Inceptez Technologies"," ") as splitted,
+    concat_ws(" ","Inceptez","Technologies") as joined;
+```
+
+---
+
+### **Q39. Which Hive analytic/windowing functions have you used in projects?**
+
+**Functions commonly used:**
+
+* `row_number()`
+* `rank()`, `dense_rank()`
+* `sum()`, `cume_sum()`
+* `avg()`, `count()`, `min()`, `max()`
+* `first_value()`, `last_value()`
+* `lead()`, `lag()`
+
+---
+
+### **Q40. Is DELETE and UPDATE possible in Hive?**
+
+**Concept:**
+
+* Yes, but only in **ACID-enabled tables** (transactional tables).
+* Alternatives:
+
+  * Partition-wise overwrite.
+  * `INSERT OVERWRITE` with new dataset.
+
+---
+
+### **Q41. What is a surrogate key in database?**
+
+**Concept:**
+
+* A **system-generated unique key** (not derived from business data).
+* Can be implemented in Hive using `row_number()`.
+
+**Example:**
+
+```sql
+select row_number() over(order by customernumber) as surrogate_key, * 
+from customers;
+```
+
+---
+
+### **Q42. Join scenario: A has 2000, B has 1000, with 500 matches. What will be output?**
+
+| **Join Type**    | **Result Count**          | **Meaning**                                               |
+| ---------------- | ------------------------- | --------------------------------------------------------- |
+| Inner Join       | 500                       | Matching customers with payments                          |
+| Left Semi Join   | 500                       | Customers with at least one payment                       |
+| Left Outer Join  | 2000                      | All customers, with/without payment                       |
+| Right Outer Join | 1000                      | All payments, regardless of customer table                |
+| Full Outer Join  | 2500                      | All customers + all payments (union with overlap handled) |
+| Cross Join       | 2,000 × 1,000 = 2,000,000 | Cartesian product                                         |
+
+---
+
+### **Q43. UNION vs UNION ALL**
+
+* **UNION** → Removes duplicates.
+* **UNION ALL** → Keeps duplicates.
+
+---
+
+### **Q44. Pick max salary employee from each department.**
+
+```sql
+select dept_name, max(salary) as max_salary 
+from emp 
+group by dept_name;
+```
+
+---
+
+### **Q45. Where do you see SQL pivot kind of feature in Hive/Spark?**
+
+**Concept:**
+
+* Pivot = Convert rows → columns (and vice versa).
+* In Hive: `explode`, `lateral view`, `pivot`.
+* In Spark: `pivot()` in DataFrame API.
+
+---
+
+### **Q46. Difference between `count(*)` and `count(1)`**
+
+* `count(*)` → counts all rows (including nulls).
+* `count(1)` → logically same, but often optimized as selecting constant instead of full row.
+* Both yield same result, but **`count(1)` can be slightly more efficient**.
+
+---
+
+### **Q47. First Value and Last Value in Hive**
+
+**Concept:**
+
+* Return first/last value in partition/window.
+
+**Example:**
+
+```sql
+select 
+    first_value(salary) over(partition by dept_name order by salary) as first_sal,
+    last_value(salary) over(partition by dept_name order by salary) as last_sal
+from emp;
+```
+
+---
+
+### **Q48. Lead and Lag in Hive**
+
+**Concept:**
+
+* `lead()` → next row.
+* `lag()` → previous row.
+
+**Example:**
+
+```sql
+select 
+    empno, salary,
+    lead(salary,1) over(partition by dept_name order by salary) as next_sal,
+    lag(salary,1) over(partition by dept_name order by salary) as prev_sal
+from emp;
+```
+
+---
+
+### **Q49. Window Function Questions**
+
+* Already covered above: `row_number`, `rank`, `dense_rank`, `lead`, `lag`, `first_value`, `last_value`, aggregates.
+
+---
+
+### **Q50. WITH Clause in Hive (CTE)**
+
+**Concept:**
+
+* Used for reusing subqueries in a single query (acts like temporary table).
+
+**Example (CTE):**
+
+```sql
+with T1 as (
+    select custno, category 
+    from txnrecords 
+    where category='Games'
+),
+T2 as (
+    select custno, category 
+    from txnrecords 
+    where category='Puzzles'
+)
+select * from T1 
+inner join T2 on T1.custno=T2.custno;
+```
+
+**Example (Temp Table):**
+
+```sql
+create temporary table temp1 as 
+select custno, category 
+from txnrecords 
+where category='Games';
+```
+
+---
+
+### **Q51. Fetch the latest record (most recent transaction).**
+
+**Option 1 – row\_number():**
+
+```sql
+select * 
+from (
+    select row_number() over(order by txnno desc) as rno, t.* 
+    from txnrecords t
+) tmp
+where rno = 1;
+```
+
+**Option 2 – max(txnno):**
+
+```sql
+select * 
+from txnrecords 
+where txnno = (select max(txnno) from txnrecords);
+```
+
+---
+
+### **Q52. Null handling in Join**
+
+**Scenario:**
+
+* Table A → `Null, James, Null`
+* Table B → `James, Null, Robert`
+* **Inner join ignores NULL matches.**
+
+**Example:**
+
+```sql
+create table nulltbl1(id int, name string);
+create table nulltbl2(id int, amt decimal(5,2));
+
+insert into nulltbl1 values (1,'a'),(2,'b'),(null,'c');
+insert into nulltbl2 values (1,5.5),(null,1.33),(3,22.33);
+
+select a.*, b.* 
+from nulltbl1 a 
+inner join nulltbl2 b 
+on a.id = b.id;
+```
+
+👉 `NULL` keys won’t be returned.
+
+---
+
+### **Q53. Change date format in Hive**
+
+**Concept:**
+
+* Use `unix_timestamp()` + `from_unixtime()` to reformat.
+
+**Example:**
+
+```sql
+select 
+    txnno, custno, amount, category, product, city, state, spendby,
+    from_unixtime(unix_timestamp(txndate,'MM-dd-yyyy'),'yyyy-MM-dd') as new_format,
+    from_unixtime(unix_timestamp(txndate,'MM-dd-yyyy')) as ts_format
+from txnrecords;
+```
+
+---
