@@ -67,6 +67,19 @@ create table payments_copy1 like learning.payments;
 show create table learning.payments;
 ```
 
+# Comparison: Creating Empty Table from Existing Table
+
+| Feature/Aspect              | **Option 1** – `CREATE TABLE ... AS SELECT * WHERE 1=2` | **Option 2** – `CREATE TABLE ... LIKE` |
+|-----------------------------|--------------------------------------------------------|----------------------------------------|
+| **Purpose**                 | Creates new table with same columns, but no rows        | Creates an exact schema copy (columns, datatypes, constraints, indexes) |
+| **Performance**             | Slower – scans source table metadata via query engine   | Faster – metadata-only operation, no data scan |
+| **Indexes/Constraints**     | ❌ Not preserved (only column definitions copied)       | ✅ Preserved (primary key, unique keys, defaults, indexes, etc.) |
+| **Storage Usage**           | Higher (query planner overhead, temporary structures)   | Minimal (only schema copied) |
+| **Ease of Use**             | Workaround style; less explicit                        | Cleaner, purpose-built syntax |
+| **When to Use**             | Rare cases where `LIKE` not supported                  | Best practice for schema cloning |
+| **Example**                 | `CREATE TABLE payments_copy AS SELECT * FROM learning.payments WHERE 1=2;` | `CREATE TABLE payments_copy1 LIKE learning.payments;` |
+
+
 ---
 
 ### **Q3. Can we join data between tables residing in two different databases/datasets?**
