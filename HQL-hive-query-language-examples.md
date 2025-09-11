@@ -63,7 +63,7 @@ select * from learning.payments where 1=2;
 **Option 2 (Efficient way):**
 
 ```sql
-create table payments_copy1 like default.payments;
+create table payments_copy1 like learning.payments;
 show create table learning.payments;
 ```
 
