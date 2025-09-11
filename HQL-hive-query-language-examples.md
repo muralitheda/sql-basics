@@ -67,7 +67,7 @@ create table payments_copy1 like learning.payments;
 show create table learning.payments;
 ```
 
-# Comparison: Creating Empty Table from Existing Table
+**Comparison: Creating Empty Table from Existing Table**
 
 | Feature/Aspect              | **Option 1** – `CREATE TABLE ... AS SELECT * WHERE 1=2` | **Option 2** – `CREATE TABLE ... LIKE` |
 |-----------------------------|--------------------------------------------------------|----------------------------------------|
