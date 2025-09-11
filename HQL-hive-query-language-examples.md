@@ -261,3 +261,227 @@ FROM payments
 WHERE paymentdate = '2023-10-21';
 ```
 
+Got it 👍 — you want me to format everything you shared into **Markdown (MD)** starting from **Question 9**, and include the **full SQL + notes + results** without skipping anything.
+
+Here’s the properly formatted version:
+
+---
+
+### **Q9. Show the customer info who made the very first payment and last payment to our company? or the very first customer of the company?**
+
+```sql
+SELECT * 
+FROM payments_part 
+WHERE paymentdate IN (SELECT MIN(paymentdate) FROM payments_part);
+```
+
+---
+
+### **Q10. Show the first payment made by a given customer to our company?**
+
+```sql
+SELECT * 
+FROM payments 
+WHERE customernumber = 496;
+```
+
+```sql
+SELECT *,
+       FIRST_VALUE(amount) OVER (PARTITION BY customernumber ORDER BY paymentdate DESC) 
+FROM payments 
+WHERE customernumber = 496;
+```
+
+---
+
+### **Q11. Show the first payment, last made by the given customer?**
+
+```sql
+-- First Payment
+SELECT * 
+FROM payments 
+WHERE customernumber = 496 
+  AND paymentdate IN (
+        SELECT MIN(paymentdate) 
+        FROM payments_part 
+        WHERE customernumber = 496
+);
+```
+
+```sql
+-- Last Payment
+SELECT * 
+FROM payments 
+WHERE customernumber = 496 
+  AND paymentdate IN (
+        SELECT MAX(paymentdate) 
+        FROM payments_part 
+        WHERE customernumber = 496
+);
+```
+
+---
+
+### **Q12. Using Co-related query: Show the first payment, last made by all the customers?**
+
+```sql
+SELECT a.* 
+FROM payments AS a 
+WHERE a.paymentdate IN (
+    SELECT MAX(b.paymentdate) 
+    FROM payments AS b 
+    WHERE b.customernumber = a.customernumber
+);
+```
+
+---
+
+### **Q13. Show the last (but one) or second recent payment made by the customer 496?**
+
+❌ Note: Nested subqueries with `NOT IN` are tricky in Hive.
+
+```sql
+SELECT a.* 
+FROM payments AS a
+WHERE a.customernumber = 496 
+  AND a.paymentdate IN (
+        SELECT MAX(b.paymentdate) 
+        FROM payments AS b  
+        WHERE b.customernumber = 496 
+          AND b.paymentdate NOT IN (
+                SELECT MAX(c.paymentdate) 
+                FROM payments AS c 
+                WHERE c.customernumber = 496
+        )
+);
+```
+
+---
+
+### **Q14. Multi column subquery**
+
+```sql
+SELECT a.* 
+FROM payments AS a
+WHERE (a.customernumber, a.paymentdate) IN (
+    SELECT c.customernumber, c.paymentdate 
+    FROM payments_part AS c 
+    WHERE c.customernumber = 496
+);
+```
+
+---
+
+### **Q15. How to achieve multi column subquery in Hive? (By converting to Joins)**
+
+```sql
+-- Using CONCAT
+SELECT a.* 
+FROM payments AS a
+WHERE CONCAT(a.customernumber, a.paymentdate) IN (
+    SELECT CONCAT(c.customernumber, c.paymentdate) 
+    FROM payments_part AS c 
+    WHERE c.customernumber = 496
+);
+
+-- Using JOIN
+SELECT a.* 
+FROM payments AS a 
+INNER JOIN payments_part AS c
+    ON (c.customernumber = a.customernumber 
+        AND a.paymentdate = c.paymentdate 
+        AND c.customernumber = 496);
+```
+
+⚠️ Error Case:
+
+```
+FAILED: SemanticException [Error 10249]: 
+Line 2:151 Unsupported SubQuery Expression 'paymentdate': 
+Nested SubQuery expressions are not supported.
+```
+
+---
+
+### **Q16. Using Windowing/Analytical Functions**
+
+👉 Insert sample record for testing:
+
+```sql
+INSERT INTO payments_part PARTITION(paymentdate='2016-10-30') 
+VALUES (496,'HQ336436',52166.01);
+```
+
+#### Show the lowest payment, highest, number of payments made by the customer 496?
+
+```sql
+SET hive.cli.print.header=true;
+
+SELECT customernumber,
+       paymentdate,
+       amount,
+       RANK()        OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rnk,
+       DENSE_RANK()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS d_rank,
+       ROW_NUMBER()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rownum,
+       CUME_DIST()   OVER (PARTITION BY customernumber ORDER BY paymentdate)        AS cumulative_dist
+FROM payments_part 
+WHERE customernumber = 496;
+```
+
+✅ **Sample Output:**
+
+| customernumber | checknumber | amount   | paymentdate | Rnk | D\_R | RowNum | Cumulative\_Dist |
+| -------------- | ----------- | -------- | ----------- | --- | ---- | ------ | ---------------- |
+| 496            | MN89921     | 52166.01 | 2016-10-30  | 1   | 1    | 1      | ...              |
+| 496            | HQ336436    | 52166.01 | 2016-10-31  | 2   | 1    | 1      | ...              |
+| 496            | MB342426    | 32077.44 | 2016-10-16  | 3   | 2    | 3      | ...              |
+| 496            | EU531600    | 30253.75 | 2016-10-25  | 4   | 3    | 4      | ...              |
+
+---
+
+### **Q17. Show the second, third largest payment made by the customer 496?**
+
+```sql
+SELECT customernumber, paymentdate, amount, rownumdt  
+FROM (
+    SELECT customernumber,
+           paymentdate,
+           amount,
+           RANK()        OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rnk,
+           DENSE_RANK()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS d_rank,
+           ROW_NUMBER()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rownum,
+           CUME_DIST()   OVER (PARTITION BY customernumber ORDER BY paymentdate)        AS cumulative_dist,
+           ROW_NUMBER()  OVER (PARTITION BY customernumber ORDER BY paymentdate DESC)   AS rownumdt
+    FROM payments_part 
+    WHERE customernumber = 496
+) AS temp
+WHERE rownum IN (2,3);
+```
+
+---
+
+### **Q18. Show the customer purchase rate whether growing up or leaning down from the overall largest and smallest payment made?**
+
+```sql
+SELECT customernumber,
+       paymentdate,
+       amount,
+       max_amt,
+       min_amt,
+       CASE 
+            WHEN min_amt = amount OR max_amt = amount THEN "No Change"
+            WHEN min_amt < amount  THEN "purchase capacity is improved"
+            WHEN max_amt > amount  THEN "purchase capacity is reduced"
+            ELSE "No Change"  
+       END AS purchase_capacity
+FROM (
+    SELECT customernumber,
+           paymentdate,
+           amount,
+           MAX(amount) OVER (PARTITION BY customernumber) AS max_amt,
+           MIN(amount) OVER (PARTITION BY customernumber) AS min_amt 
+    FROM payments_part 
+    WHERE customernumber = 496
+) AS temp
+ORDER BY paymentdate;
+```
