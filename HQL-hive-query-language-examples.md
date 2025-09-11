@@ -249,7 +249,7 @@ select distinct customernumber, checknumber, amount, paymentdate
 from payments_part;
 ```
 
-**Enable Strict Mode**
+**Enable Partition Strict Mode:**
 ```sql
 -- Enable strict mode
 SET hive.exec.dynamic.partition.mode=strict;
