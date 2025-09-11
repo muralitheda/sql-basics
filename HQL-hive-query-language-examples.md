@@ -114,7 +114,10 @@ insert  into `payments` values
 
 ```sql
 -- Insert 3 duplicate rows into customers
-insert into `customers` values (...);
+insert  into `customers` values 
+(103,'Atelier graphique','Schmitt','Carine ','40.32.2555','54, rue   fàcRoyale',NULL,'Nantes',NULL,'44000','France',1370,'21000.00'),
+(112,'Signal Gift Stores','King','Jean','7025551838','8489 Strong St.',NULL,'Las Vegas','NV','83030','USA',1166,'71800.00'),
+(114,'Australian Collectors, Co.','Ferguson','Peter','03 9520 4555','636 St Kilda Road','Level 3','Melbourne','Victoria','3004','Australia',1611,'117300.00');
 ```
 
 ---
