@@ -138,6 +138,8 @@ from payments
 group by customerNumber, checkNumber, paymentDate, amount;
 ```
 
+**Comparison:**
+
 | Phase             | **Option 1: DISTINCT \***                                                                      | **Option 2: GROUP BY (selected keys)**                                                                                      |
 | ----------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | **Map Phase**     | - Reads **all columns** from table. <br> - No column pruning. <br> - No map-side aggregation.  | - Reads **only selected columns** (4 in this case) → column pruning. <br> - Performs **map-side aggregation** (if enabled). |
