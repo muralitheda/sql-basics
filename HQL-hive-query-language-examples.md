@@ -734,3 +734,260 @@ FULL OUTER JOIN payments p
 ```
 
 ---
+
+### **Q25. Show me the customers who paid the payments at least once. Another important example: I want to know whether the given customer is a repeating or new?**
+
+**Concept:**
+
+* **INNER JOIN** returns rows from both tables when there is a match.
+* **LEFT SEMI JOIN** returns only rows from the left table if at least one match exists in the right table.
+* Performance: **INNER JOIN** iterates over all matches, while **LEFT SEMI JOIN** stops after the first match.
+
+**Example:**
+
+```sql
+select c.* 
+from customers c 
+left semi join payments p 
+on (c.customernumber = p.customernumber and c.customernumber=496);
+
+select c.customernumber, c.customername 
+from customers c 
+inner join (
+    select max(customernumber) as customernumber from payments
+) p 
+on (c.customernumber=p.customernumber);
+```
+
+---
+
+### **Q26. Show the customers who made the payment in a range of amounts (6000–10000 and 30000–50000).**
+
+**Concept:**
+
+* Use **UNION ALL** to combine results from multiple ranges.
+
+**Example:**
+
+```sql
+select * 
+from payments 
+where amount between 6000 and 10000
+
+union all 
+
+select * 
+from payments 
+where amount between 30000 and 50000;
+```
+
+---
+
+### **Q27. Show me the combined result of two different tables picking 1 column from table1 and 2 columns from table2. Can we union tables with different columns or data types?**
+
+**Concept:**
+
+* Yes, by adding **dummy columns** and **casting datatypes**.
+
+**Example:**
+
+```sql
+select p.customernumber, p.amount, 'NA' as country 
+from retail.payments p 
+where p.amount between 6000 and 10000
+
+union all 
+
+select customernumber, 0 as amount, country 
+from retail.customers 
+where customernumber > 400;
+```
+
+---
+
+### **Q28. Can we union two tables which contain different number of columns or different data types?**
+
+**Concept:**
+
+* Yes, but columns must match in **count** and **type** after adjustment.
+
+**Example 1:**
+
+```sql
+select * from payments_version 
+union 
+select customernumber,0 as version,checknumber, paymentdate, amount 
+from payments;
+```
+
+**Example 2 (with type cast):**
+
+```sql
+select customernumber, cast(version as string) as version, checknumber, paymentdate, amount 
+from payments_version 
+
+union 
+
+select customernumber, 'zero' as version, checknumber, paymentdate, amount 
+from payments;
+```
+
+---
+
+### **Q29. Show the customers who made the payment (INTERSECT) and the anonymous customers (MINUS).**
+
+**Concept:**
+
+* **INTERSECT** → common rows between two datasets.
+* **MINUS** → rows in one dataset not present in the other.
+
+**Example:**
+
+```sql
+select * from payments 
+intersect 
+select customernumber, checknumber, paymentdate, amount 
+from payments_version;
+
+select * from payments 
+minus 
+select customernumber, checknumber, paymentdate, amount 
+from payments_version;
+```
+
+---
+
+### **Q30. Show me the customers who have more than 1 phone number and more than 1 address.**
+
+**Concept:**
+
+* Use **GROUP BY** with **HAVING** for filtering.
+
+**Example:**
+
+```sql
+insert into customers 
+values (103,'Atelier graphique','Schmitt','Carine','908-199-0411',
+        '55, rue Royale',NULL,'Nantes',NULL,'44000','France',1370,'21000.00');
+
+select customernumber, count(distinct phone) as cnt, count(distinct addressline1) as cnt2
+from customers 
+group by customernumber 
+having cnt > 1 and cnt2 > 1;
+```
+
+---
+
+### **Q31. How do you create structured data (struct/json) from a set of columns in Hive?**
+
+**Concept:**
+
+* Use `named_struct` or `struct()` functions to group columns.
+
+**Example:**
+
+```sql
+select named_struct("id", customernumber, "name", customername) 
+from customers;
+
+select strct.id 
+from (
+    select struct(customernumber as id, customername as name) strct 
+    from curatedds.customers
+);
+```
+
+---
+
+### **Q32. How to collect column values as an array (pivot a column into a row)?**
+
+**Concept:**
+
+* Use `collect_list()` or `array_agg()` to gather column values into arrays.
+
+**Example:**
+
+```sql
+select customernumber, collect_list(phone) as grouped_phone 
+from customers 
+where customernumber in (103,112) 
+group by customernumber;
+
+select customernumber, array_agg(phone) as grouped_phone 
+from curatedds.customers 
+where customernumber in (103,112) 
+group by customernumber;
+```
+
+---
+
+### **Q33. How to load semi-structured data (with arrays) into Hive?**
+
+**Concept:**
+
+* Use **collection items terminated by** clause for arrays.
+
+**Example:**
+
+```sql
+create table orderpages (
+    customernumber string,
+    comments string,
+    pagenavigation array<string>,
+    pagenavigationidx array<int>
+) 
+row format delimited fields terminated by ',' 
+collection items terminated by '$';
+
+load data local inpath '/home/hduser/orderstg' 
+overwrite into table orderpages;
+```
+
+---
+
+### **Q34. How to collect array values as rows (unpivot array column)?**
+
+**Concept:**
+
+* Use `explode()` to expand arrays into multiple rows.
+
+**Example:**
+
+```sql
+select explode(pagenavigation) 
+from orderpages;
+```
+
+---
+
+### **Q35. Show me the position of array elements in Hive (order of navigation).**
+
+**Concept:**
+
+* Use `posexplode()` to get both **index** and **value**.
+
+**Example:**
+
+```sql
+select posexplode(pagenavigation) 
+from orderpages;
+```
+
+---
+
+### **Q36. Display customer number, comments, and pages navigated (array expansion with lateral view).**
+
+**Concept:**
+
+* Use **LATERAL VIEW + posexplode()** to flatten arrays with positions.
+
+**Example:**
+
+```sql
+select customernumber, comments, idx, pgnavigation_column 
+from orderpages 
+lateral view posexplode(pagenavigation) exploded_tbl as idx, pgnavigation_column;
+```
+
+---
+
