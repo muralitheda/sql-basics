@@ -138,6 +138,15 @@ from payments
 group by customerNumber, checkNumber, paymentDate, amount;
 ```
 
+| Phase             | **Option 1: DISTINCT \***                                                                      | **Option 2: GROUP BY (selected keys)**                                                                                      |
+| ----------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Map Phase**     | - Reads **all columns** from table. <br> - No column pruning. <br> - No map-side aggregation.  | - Reads **only selected columns** (4 in this case) → column pruning. <br> - Performs **map-side aggregation** (if enabled). |
+| **Shuffle Phase** | - **Shuffles entire rows** (all columns) across network. <br> - High shuffle size = heavy I/O. | - **Shuffles only group keys** (customerNumber, checkNumber, paymentDate, amount). <br> - Much smaller shuffle size.        |
+| **Reduce Phase**  | - Reducers eliminate duplicates by comparing full rows. <br> - More memory and CPU overhead.   | - Reducers finalize aggregation. <br> - Less memory and CPU used because data already partially aggregated.                 |
+| **Network I/O**   | Very high (large data shuffled).                                                               | Lower (only necessary columns shuffled).                                                                                    |
+| **Performance**   | Slower (inefficient for large tables).                                                         | Faster and more scalable.                                                                                                   |
+| **Best Use Case** | Small tables or when full row uniqueness is needed.                                            | Large tables where deduplication is required on specific keys.                                                              |
+
 ---
 
 ### **Q7. How to identify which customer table records are duplicated and how many duplicates exist?**
