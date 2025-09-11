@@ -1,7 +1,5 @@
 
-# Hive SQL Interview Questions
-
----
+# Hive SQL Examples
 
 ### **Q1. Sample Data Load**
 
