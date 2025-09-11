@@ -481,3 +481,256 @@ FROM (
 ) AS temp
 ORDER BY paymentdate;
 ```
+
+---
+
+### **Q19. Show the customer purchase rate whether growing up or leaning down from the immediate previous and next payment made?**
+
+➡️ Using **Analytical Functions (LAG & LEAD)**
+
+```sql
+-- CASE WHEN condition THEN result ... END
+SELECT customernumber,
+       paymentdate,
+       amount,
+       amount_paid_previous_day,
+       amount_paid_next_day,
+       CASE 
+            WHEN amount_paid_previous_day > amount THEN "purchase capacity is reduced"
+            WHEN amount_paid_previous_day IS NULL THEN "First Transaction"
+            WHEN amount_paid_previous_day = amount THEN "no change in the purchase amount"
+            ELSE "purchase capacity is improved"
+       END AS lag,
+       CASE 
+            WHEN amount_paid_next_day > amount THEN "next day payment is high"
+            WHEN amount_paid_next_day IS NULL THEN "next day payment is same"
+            WHEN amount_paid_previous_day = amount THEN "no change in the purchase amount"
+            ELSE "next day payment is same"
+       END AS lead
+FROM (
+    SELECT customernumber,
+           paymentdate,
+           LAG(amount)  OVER (PARTITION BY customernumber ORDER BY paymentdate) AS amount_paid_previous_day,
+           amount,
+           LEAD(amount) OVER (PARTITION BY customernumber ORDER BY paymentdate) AS amount_paid_next_day
+    FROM curatedds.payments 
+    WHERE customernumber IN (496)
+) AS temp
+ORDER BY customernumber, paymentdate;
+```
+
+---
+
+### **Q20. How to create random unique alphanumeric values?**
+
+```sql
+SELECT REGEXP_REPLACE(REFLECT('java.util.UUID','randomUUID'), '-', '') AS row_num,
+       p.* 
+FROM payments AS p;
+```
+
+---
+
+### **Q21. How to create surrogate key or sequence number?**
+
+```sql
+CREATE EXTERNAL TABLE payments_increment (
+    paymentid INT,
+    customernumber INT,
+    checknumber STRING,
+    paymentdate DATE,
+    amount DOUBLE
+) 
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY ',' 
+LOCATION '/user/hduser/paymentsincr';
+
+-- Insert with sequence generation
+INSERT INTO TABLE payments_increment 
+SELECT ROW_NUMBER() OVER() + COALESCE(pi.maxseq,0),
+       customernumber,
+       checknumber,
+       paymentdate,
+       amount 
+FROM payments AS p
+LEFT OUTER JOIN (
+    SELECT 1 AS dummy, MAX(paymentid) maxseq 
+    FROM payments_increment
+) AS pi;
+
+-- Verify result
+SELECT * 
+FROM payments_increment 
+WHERE customernumber = 496;
+```
+
+---
+
+### **Q22. How to create version numbers for the payments made by the customers?**
+
+#### (a) Without considering history (fresh versioning)
+
+```sql
+CREATE TABLE payments_version (
+    customerNumber INT,
+    version INT,
+    checkNumber VARCHAR(50),
+    paymentDate DATE,
+    amount DECIMAL(10,2)
+) ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY ',';
+
+-- Insert with row_number()
+INSERT OVERWRITE TABLE payments_version 
+SELECT customernumber,
+       ROW_NUMBER() OVER (PARTITION BY customernumber ORDER BY paymentdate),
+       checknumber,
+       paymentdate,
+       amount 
+FROM payments;
+```
+
+#### (b) With historical lookup (**SCD Type 2**)
+
+```sql
+INSERT INTO TABLE payments_version 
+SELECT p.customernumber,
+       ROW_NUMBER() OVER (PARTITION BY p.customernumber ORDER BY paymentdate) + COALESCE(maxversion,0),
+       checknumber,
+       paymentdate,
+       amount 
+FROM payments AS p
+LEFT OUTER JOIN (
+    SELECT customernumber, MAX(version) maxversion 
+    FROM payments_version 
+    GROUP BY customernumber
+) AS pi 
+ON pi.customernumber = p.customernumber;
+
+-- Verify result
+SELECT * 
+FROM payments_version 
+WHERE customernumber = 496;
+```
+
+---
+
+### **Q23. Update the data based on another table (using JOIN)?**
+
+```sql
+UPDATE curatedds.customer_50 cs
+SET cs.city = c.city
+FROM curatedds.customers c
+WHERE c.customernumber = cs.customernumber;
+```
+
+---
+
+### **Q24. Joins: Inner, Outer (Left, Right, Full), Semi, Anti, Self, Cross**
+
+#### Insert sample data
+
+```sql
+INSERT INTO payments 
+VALUES (1000,'HQ336336','2016-10-19','6066.78'),
+       (1003,'JM555205','2016-10-05','14571.44');
+```
+
+---
+
+#### (a) Show only customers who didn’t make payments (e.g., customer 481)
+
+```sql
+SELECT * 
+FROM payments 
+WHERE customernumber = 481;
+```
+
+```sql
+SELECT c.customernumber, c.customername, p.amount 
+FROM customers c 
+LEFT JOIN payments p 
+       ON c.customernumber = p.customernumber 
+WHERE c.customernumber IN (496,481);
+```
+
+```sql
+SELECT c.customernumber, c.customername 
+FROM customers c 
+WHERE NOT EXISTS (
+    SELECT p.customernumber 
+    FROM payments p 
+    WHERE p.customernumber = c.customernumber
+)
+AND c.customernumber IN (496,481);
+```
+
+```sql
+SELECT c.customernumber, c.customername 
+FROM customers c 
+WHERE c.customernumber NOT IN (
+    SELECT customernumber 
+    FROM payments p
+)
+AND c.customernumber IN (496,481);
+```
+
+---
+
+#### (b) Show only customers who **made payments** and their amounts
+
+```sql
+-- Using INNER JOIN
+SELECT c.customernumber, c.customername, p.amount 
+FROM customers c 
+INNER JOIN payments p 
+       ON c.customernumber = p.customernumber 
+WHERE c.customernumber IN (496,481);
+```
+
+```sql
+-- Using EXISTS
+SELECT c.customernumber, c.customername 
+FROM customers c 
+WHERE EXISTS (
+    SELECT p.customernumber 
+    FROM payments p 
+    WHERE p.customernumber = c.customernumber
+);
+```
+
+```sql
+-- Using IN
+SELECT c.customernumber, c.customername 
+FROM customers c 
+WHERE c.customernumber IN (
+    SELECT customernumber 
+    FROM payments p
+);
+```
+
+---
+
+#### (c) Show customers with **no details** who made payments anonymously
+
+```sql
+SELECT c.customernumber, c.customername, p.amount 
+FROM customers c 
+RIGHT OUTER JOIN payments p 
+       ON c.customernumber = p.customernumber 
+WHERE c.customernumber IS NULL
+  AND p.customernumber IN (496,1000);
+```
+
+---
+
+#### (d) Show customers **and** payments info (both sides)
+
+```sql
+SELECT c.customernumber, c.customername, p.amount 
+FROM customers c 
+FULL OUTER JOIN payments p 
+     ON c.customernumber = p.customernumber;
+```
+
+---
