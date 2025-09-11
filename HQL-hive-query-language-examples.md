@@ -249,5 +249,15 @@ select distinct customernumber, checknumber, amount, paymentdate
 from payments_part;
 ```
 
+**Enable Strict Mode**
+```sql
+-- Enable strict mode
+SET hive.exec.dynamic.partition.mode=strict;
 
+-- At least one partition must be static
+INSERT OVERWRITE TABLE payments_part PARTITION (paymentdate='2023-10-21')
+SELECT customernumber, checknumber, amount
+FROM payments
+WHERE paymentdate = '2023-10-21';
+```
 
