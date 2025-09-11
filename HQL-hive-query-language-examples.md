@@ -183,6 +183,7 @@ having count(1) > 1;
 ---
 
 ### **Q8. How to remove/delete duplicate payments and retain only de-duplicated data?**
+**Note: DELETE statement is not supported in Hive**
 
 **Approaches:**
 
