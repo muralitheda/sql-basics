@@ -459,6 +459,8 @@ INNER JOIN payments_part AS c
 ```sql
 INSERT INTO payments_part PARTITION(paymentdate='2016-10-30') 
 VALUES (205,'HQ336436',52166.01);
+INSERT INTO payments_part PARTITION(paymentdate='2016-10-30') 
+VALUES (205,'HQ336436',52166.01);
 ```
 
 #### Show the lowest payment, highest, number of payments made by the customer 496?
