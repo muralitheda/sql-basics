@@ -542,7 +542,7 @@ FROM (
            MAX(amount) OVER (PARTITION BY customernumber) AS max_amt,
            MIN(amount) OVER (PARTITION BY customernumber) AS min_amt 
     FROM payments_part 
-    WHERE customernumber = 496
+    WHERE customernumber = 205
 ) AS temp
 ORDER BY paymentdate;
 ```
