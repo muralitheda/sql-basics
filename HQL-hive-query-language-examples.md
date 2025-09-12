@@ -339,11 +339,11 @@ WHERE customernumber = 205;
 -- First Payment
 SELECT * 
 FROM payments 
-WHERE customernumber = 496 
+WHERE customernumber = 205 
   AND paymentdate IN (
         SELECT MIN(paymentdate) 
         FROM payments_part 
-        WHERE customernumber = 496
+        WHERE customernumber = 205
 );
 ```
 
@@ -355,7 +355,7 @@ WHERE customernumber = 496
   AND paymentdate IN (
         SELECT MAX(paymentdate) 
         FROM payments_part 
-        WHERE customernumber = 496
+        WHERE customernumber = 205
 );
 ```
 
@@ -377,20 +377,20 @@ WHERE a.paymentdate IN (
 
 ### **Q13. Show the last (but one) or second recent payment made by the customer 496?**
 
-❌ Note: Nested subqueries with `NOT IN` are tricky in Hive.
+❌ Note: Nested subqueries with `NOT IN` are tricky in Hive. Alternate option is Windowing function.
 
 ```sql
 SELECT a.* 
 FROM payments AS a
-WHERE a.customernumber = 496 
+WHERE a.customernumber = 205 
   AND a.paymentdate IN (
         SELECT MAX(b.paymentdate) 
         FROM payments AS b  
-        WHERE b.customernumber = 496 
+        WHERE b.customernumber = 205 
           AND b.paymentdate NOT IN (
                 SELECT MAX(c.paymentdate) 
                 FROM payments AS c 
-                WHERE c.customernumber = 496
+                WHERE c.customernumber = 205
         )
 );
 ```
@@ -405,13 +405,13 @@ FROM payments AS a
 WHERE (a.customernumber, a.paymentdate) IN (
     SELECT c.customernumber, c.paymentdate 
     FROM payments_part AS c 
-    WHERE c.customernumber = 496
+    WHERE c.customernumber = 205
 );
 ```
 
 ---
 
-### **Q15. How to achieve multi column subquery in Hive? (By converting to Joins)**
+### **Q15. How to achieve multi-column subquery in Hive? (By converting to Joins)**
 
 ```sql
 -- Using CONCAT
@@ -420,7 +420,7 @@ FROM payments AS a
 WHERE CONCAT(a.customernumber, a.paymentdate) IN (
     SELECT CONCAT(c.customernumber, c.paymentdate) 
     FROM payments_part AS c 
-    WHERE c.customernumber = 496
+    WHERE c.customernumber = 205
 );
 
 -- Using JOIN
@@ -429,7 +429,7 @@ FROM payments AS a
 INNER JOIN payments_part AS c
     ON (c.customernumber = a.customernumber 
         AND a.paymentdate = c.paymentdate 
-        AND c.customernumber = 496);
+        AND c.customernumber = 205);
 ```
 
 ⚠️ Error Case:
