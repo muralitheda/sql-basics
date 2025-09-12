@@ -302,8 +302,15 @@ WHERE customernumber = 496;
 SELECT *,
        FIRST_VALUE(amount) OVER (PARTITION BY customernumber ORDER BY paymentdate DESC) 
 FROM payments 
-WHERE customernumber = 496;
+WHERE customernumber = 205;
 ```
+
+| payments.customernumber | payments.checknumber | payments.paymentdate | payments.amount | first_value_window_0 |
+|---|---|---|---|---|
+| 205 | GL756480 | 2016-10-04 | 3879.96 | 3879.96 |
+| 205 | LL562733 | 2016-10-05 | 50342.74 | 3879.96 |
+| 205 | NM739638 | 2016-10-06 | 39580.60 | 3879.96 |
+
 
 ---
 
