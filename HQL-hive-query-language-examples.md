@@ -11,7 +11,7 @@ start-history-server.sh
 jps
 
 
---Prerequisite: Create Hive database
+--Prerequisite: Creating a Hive database
 CREATE DATABASE learning;
 USE learning;
 SET hive.cli.print.current.db = true;
@@ -287,6 +287,16 @@ SELECT *
 FROM payments 
 WHERE customernumber = 496;
 ```
+
+
+**Analytical/windowing functions commonly used:**
+
+* `row_number()`
+* `rank()`, `dense_rank()`
+* `sum()`, `cume_sum()`
+* `avg()`, `count()`, `min()`, `max()`
+* `first_value()`, `last_value()`
+* `lead()`, `lag()`
 
 ```sql
 SELECT *,
