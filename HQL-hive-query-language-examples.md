@@ -395,6 +395,14 @@ WHERE a.customernumber = 205
 );
 ```
 
+⚠️ Error Case:
+
+```
+FAILED: SemanticException [Error 10249]: 
+Line 2:151 Unsupported SubQuery Expression 'paymentdate': 
+Nested SubQuery expressions are not supported.
+```
+
 ---
 
 ### **Q14. Multi column subquery (❌ Note: It is not supported in Hive)**
@@ -432,13 +440,6 @@ INNER JOIN payments_part AS c
         AND c.customernumber = 205);
 ```
 
-⚠️ Error Case:
-
-```
-FAILED: SemanticException [Error 10249]: 
-Line 2:151 Unsupported SubQuery Expression 'paymentdate': 
-Nested SubQuery expressions are not supported.
-```
 
 ---
 
