@@ -399,6 +399,8 @@ WHERE a.customernumber = 205
 
 ### **Q14. Multi column subquery**
 
+❌ Note: Multi column subquery is not supported in Hive
+
 ```sql
 SELECT a.* 
 FROM payments AS a
