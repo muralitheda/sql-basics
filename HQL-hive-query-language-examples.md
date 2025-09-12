@@ -449,7 +449,7 @@ INNER JOIN payments_part AS c
 
 ```sql
 INSERT INTO payments_part PARTITION(paymentdate='2016-10-30') 
-VALUES (496,'HQ336436',52166.01);
+VALUES (205,'HQ336436',52166.01);
 ```
 
 #### Show the lowest payment, highest, number of payments made by the customer 496?
@@ -465,7 +465,7 @@ SELECT customernumber,
        ROW_NUMBER()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rownum,
        CUME_DIST()   OVER (PARTITION BY customernumber ORDER BY paymentdate)        AS cumulative_dist
 FROM payments_part 
-WHERE customernumber = 496;
+WHERE customernumber = 205;
 ```
 
 ✅ **Sample Output:**
