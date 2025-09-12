@@ -475,9 +475,9 @@ SET hive.cli.print.header=true;
 SELECT customernumber,
        paymentdate,
        amount,
+       ROW_NUMBER()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rownum,
        RANK()        OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rnk,
        DENSE_RANK()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS d_rank,
-       ROW_NUMBER()  OVER (PARTITION BY customernumber ORDER BY amount DESC)        AS rownum,
        CUME_DIST()   OVER (PARTITION BY customernumber ORDER BY paymentdate)        AS cumulative_distribution
 FROM payments_part 
 WHERE customernumber = 205;
@@ -485,13 +485,13 @@ WHERE customernumber = 205;
 
 ✅ **Sample Output:**
 
-| customernumber | paymentdate | amount | rnk | d_rank | rownum | cumulative_distribution |
+| customernumber | paymentdate | amount | rownum | rnk | d_rank | cumulative_distribution |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 205 | 2016-10-04 | 3879.96 | 5 | 4 | 5 | 0.2 |
-| 205 | 2016-10-05 | 50342.74 | 3 | 2 | 3 | 0.4 |
-| 205 | 2016-10-06 | 39580.60 | 4 | 3 | 4 | 0.6 |
-| 205 | 2016-10-30 | 52166.01 | 1 | 1 | 2 | 1.0 |
 | 205 | 2016-10-30 | 52166.01 | 1 | 1 | 1 | 1.0 |
+| 205 | 2016-10-30 | 52166.01 | 2 | 1 | 1 | 1.0 |
+| 205 | 2016-10-05 | 50342.74 | 3 | 3 | 2 | 0.4 |
+| 205 | 2016-10-06 | 39580.60 | 4 | 4 | 3 | 0.6 |
+| 205 | 2016-10-04 | 3879.96 | 5 | 5 | 4 | 0.2 |
 
 ---
 
