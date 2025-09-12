@@ -547,6 +547,14 @@ FROM (
 ORDER BY paymentdate;
 ```
 
+| customernumber | paymentdate | amount | max_amt | min_amt | purchase_capacity |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 205 | 2016-10-04 | 3879.96 | 52166.01 | 3879.96 | No Change |
+| 205 | 2016-10-05 | 50342.74 | 52166.01 | 3879.96 | purchase capacity is improved |
+| 205 | 2016-10-06 | 39580.60 | 52166.01 | 3879.96 | purchase capacity is improved |
+| 205 | 2016-10-30 | 52166.01 | 52166.01 | 3879.96 | No Change |
+| 205 | 2016-10-30 | 52166.01 | 52166.01 | 3879.96 | No Change |
+
 ---
 
 ### **Q19. Show the customer purchase rate whether growing up or leaning down from the immediate previous and next payment made?**
