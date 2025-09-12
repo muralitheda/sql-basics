@@ -285,7 +285,7 @@ WHERE paymentdate IN (SELECT MIN(paymentdate) FROM payments_part);
 ```sql
 SELECT * 
 FROM payments 
-WHERE customernumber = 496;
+WHERE customernumber = 205;
 ```
 
 
