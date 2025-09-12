@@ -5,6 +5,13 @@
 
 ```sql
 
+--Prerequisite: Start the Hadoop cluster and History Server
+start-all.sh
+start-history-server.sh
+jps
+
+
+--Prerequisite: Create Hive database
 CREATE DATABASE learning;
 USE learning;
 SET hive.cli.print.current.db = true;
