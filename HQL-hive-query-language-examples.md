@@ -299,8 +299,9 @@ WHERE customernumber = 496;
 * `lead()`, `lag()`
 
 ```sql
+-- First payment made by a given customer to our company?
 SELECT *,
-       FIRST_VALUE(amount) OVER (PARTITION BY customernumber ORDER BY paymentdate DESC) 
+       FIRST_VALUE(amount) OVER (PARTITION BY customernumber ORDER BY paymentdate ASC)
 FROM payments 
 WHERE customernumber = 205;
 ```
@@ -310,6 +311,24 @@ WHERE customernumber = 205;
 | 205 | GL756480 | 2016-10-04 | `3879.96`     | `3879.96` |
 | 205 | LL562733 | 2016-10-05 | 50342.74      | `3879.96` |
 | 205 | NM739638 | 2016-10-06 | 39580.60      | `3879.96` |
+
+```sql
+-- Last payment made by a given customer to our company?
+
+SELECT *,
+       LAST_VALUE(amount) OVER (
+              PARTITION BY customernumber 
+              ORDER BY paymentdate ASC 
+              ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+       ) 
+FROM payments 
+WHERE customernumber = 205;
+```
+| payments.customernumber | payments.checknumber | payments.paymentdate | payments.amount | LAST_VALUE_window_0  |
+| :---------------------- | :------------------- | :------------------- |:----------------|:---------------------|
+| 205                     | GL756480             | 2016-10-04           | 3879.96         | `39580.60`           |
+| 205                     | LL562733             | 2016-10-05           | 50342.74        | `39580.60`           |
+| 205                     | NM739638             | 2016-10-06           | `39580.60`        | `39580.60`            |
 
 
 ---
