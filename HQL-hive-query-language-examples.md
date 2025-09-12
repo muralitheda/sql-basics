@@ -445,6 +445,15 @@ INNER JOIN payments_part AS c
 
 ### **Q16. Using Windowing/Analytical Functions**
 
+**Analytical/windowing functions commonly used:**
+
+* `row_number()`
+* `rank()`, `dense_rank()`
+* `sum()`, `cume_sum()`
+* `avg()`, `count()`, `min()`, `max()`
+* `first_value()`, `last_value()`
+* `lead()`, `lag()`
+
 👉 Insert sample record for testing:
 
 ```sql
