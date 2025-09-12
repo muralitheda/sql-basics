@@ -495,7 +495,7 @@ WHERE customernumber = 205;
 
 ---
 
-### **Q17. Show the second, third largest payment made by the customer 496?**
+### **Q17. Show the second, third largest payment made by the customer 205?**
 
 ```sql
 SELECT customernumber, paymentdate, amount, rownumdt  
@@ -509,10 +509,15 @@ FROM (
            CUME_DIST()   OVER (PARTITION BY customernumber ORDER BY paymentdate)        AS cumulative_dist,
            ROW_NUMBER()  OVER (PARTITION BY customernumber ORDER BY paymentdate DESC)   AS rownumdt
     FROM payments_part 
-    WHERE customernumber = 496
+    WHERE customernumber = 205
 ) AS temp
 WHERE rownum IN (2,3);
 ```
+
+| customernumber | paymentdate | amount | rownumdt |
+| :--- | :--- | :--- | :--- |
+| 205 | 2016-10-30 | 52166.01 | 2 |
+| 205 | 2016-10-05 | 50342.74 | 4 |
 
 ---
 
