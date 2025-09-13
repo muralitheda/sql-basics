@@ -593,7 +593,7 @@ FROM (
            LAG(amount)  OVER (PARTITION BY customernumber ORDER BY paymentdate) AS amount_paid_previous_day,
            amount,
            LEAD(amount) OVER (PARTITION BY customernumber ORDER BY paymentdate) AS amount_paid_next_day
-    FROM curatedds.payments 
+    FROM payments 
     WHERE customernumber IN (205)
 ) AS temp
 ORDER BY customernumber, paymentdate;
