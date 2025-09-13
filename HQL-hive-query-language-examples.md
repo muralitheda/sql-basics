@@ -599,6 +599,12 @@ FROM (
 ORDER BY customernumber, paymentdate;
 ```
 
+| customernumber | paymentdate | amount | amount_paid_previous_day | amount_paid_next_day | lag | lead |
+|:---|:---|:---|:---|:---|:---|:---|
+| 205 | 2016-10-04 | 3879.96 | NULL | 50342.74 | First Transaction | next day payment is high |
+| 205 | 2016-10-05 | 50342.74 | 3879.96 | 39580.60 | purchase capacity is improved | next day payment is same |
+| 205 | 2016-10-06 | 39580.60 | 50342.74 | NULL | purchase capacity is reduced | next day payment is same |
+
 ---
 
 ### **Q20. How to create random unique alphanumeric values?**
