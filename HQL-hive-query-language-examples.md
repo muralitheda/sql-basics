@@ -614,6 +614,9 @@ SELECT REGEXP_REPLACE(REFLECT('java.util.UUID','randomUUID'), '-', '') AS row_nu
        p.* 
 FROM payments AS p LIMIT 5;
 ```
+java.util.UUID is a class in Java that represents an immutable universally unique identifier (UUID).  
+A UUID is a 128-bit value that is unique across all computers and networks,  
+making it ideal for creating unique identifiers for objects, sessions, or records without a centralized authority.
 
 | row_num | p.customernumber | p.checknumber | p.paymentdate | p.amount |
 |:---|:---|:---|:---|:---|
