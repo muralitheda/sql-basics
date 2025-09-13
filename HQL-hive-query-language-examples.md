@@ -612,8 +612,16 @@ ORDER BY customernumber, paymentdate;
 ```sql
 SELECT REGEXP_REPLACE(REFLECT('java.util.UUID','randomUUID'), '-', '') AS row_num,
        p.* 
-FROM payments AS p;
+FROM payments AS p LIMIT 5;
 ```
+
+| row_num | p.customernumber | p.checknumber | p.paymentdate | p.amount |
+|:---|:---|:---|:---|:---|
+| d4264dfa76004fa8b79442aee069a590 | 103 | HQ336336 | 2016-10-19 | 6066.78 |
+| 215981a360e94a1ea2f72693cfded442 | 103 | JM555205 | 2016-10-05 | 14571.44 |
+| 624f12ca557c48118ff8386f199c0e1f | 103 | OM314933 | 2016-10-18 | 1676.14 |
+| 99f292a078ee4c5e82f1440806960295 | 112 | BO864823 | 2016-10-17 | 14191.12 |
+| 88d64825d07040309f349417c8af8aa1 | 112 | HQ55022 | 2016-10-06 | 32641.98 |
 
 ---
 
