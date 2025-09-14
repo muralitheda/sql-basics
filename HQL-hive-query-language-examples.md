@@ -781,10 +781,38 @@ ON pi.customernumber = p.customernumber
 ### **Q23. Update the data based on another table (using JOIN)?**
 
 ```sql
-UPDATE curatedds.customer_50 cs
-SET cs.city = c.city
-FROM curatedds.customers c
-WHERE c.customernumber = cs.customernumber;
+---UPDATE ... SET ... FROM is not directly supported in Hive.
+UPDATE  payments_part pp
+SET pp.amount = p.amount 
+FROM payments p
+WHERE p.customernumber = pp.customernumber
+AND p.customernumber = 205;
+
+---Alternate option IS MERGE and needs to enable the below options
+SET hive.support.concurrency = true;
+SET hive.enforce.bucketing = true;
+SET hive.exec.dynamic.partition.mode = nonstrict;
+SET hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DbTxnManager;
+SET hive.compactor.initiator.on = true;
+SET hive.compactor.worker.threads = 1;
+
+--Updates are supported only on ACID (transactional) tables.
+CREATE TABLE payments_part_trans (
+  customernumber INT,
+  amount DECIMAL(10,2)
+)
+CLUSTERED BY (customernumber) INTO 4 BUCKETS
+STORED AS ORC
+TBLPROPERTIES ('transactional'='true');
+
+MERGE INTO payments_part_trans t
+USING payments_part s
+ON t.customernumber = s.customernumber
+WHEN MATCHED AND t.customernumber = 205 THEN
+  UPDATE SET amount = s.amount;
+  
+SELECT * FROM payments_part_trans;
+
 ```
 
 ---
