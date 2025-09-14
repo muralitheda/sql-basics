@@ -658,7 +658,7 @@ LEFT OUTER JOIN (
 -- Verify result
 SELECT * 
 FROM payments_increment 
-WHERE customernumber = 496;
+WHERE customernumber = 205;
 ```
 
 ---
