@@ -522,6 +522,21 @@ WHERE customernumber = 205;
 
 ---
 
+```sql
+WITH customer_spend
+AS (
+SELECT customernumber,(amount) AS total_spent
+  FROM payments_part 
+GROUP BY customernumber
+), ranked_customers
+AS ( 
+SELECT customernumber, total_spent,
+       cume_dist() OVER ( PARTITION customernumber ORDER BY total_spent DESC) AS spend_distribution
+FROM customer_spend
+)
+SELECT * FROM  ranked_customers WHERE spend_distribution <= 0.10; -- 10% SPENDING CAPABILTIES
+```
+
 ### **Q17. Show the second, third largest payment made by the customer 205?**
 
 ```sql
