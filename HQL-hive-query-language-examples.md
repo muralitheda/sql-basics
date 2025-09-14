@@ -700,7 +700,7 @@ WHERE customernumber = 205;
 
 ### **Q22. How to create version numbers for the payments made by the customers?**
 
-#### (a) Without considering history (fresh versioning)
+#### (a) Without considering history (fresh versioning) (**SCD Type 1**)
 
 ```sql
 CREATE TABLE payments_version (
@@ -742,7 +742,7 @@ ON pi.customernumber = p.customernumber;
 -- Verify result
 SELECT * 
 FROM payments_version 
-WHERE customernumber = 496;
+WHERE customernumber = 103;
 ```
 
 ---
