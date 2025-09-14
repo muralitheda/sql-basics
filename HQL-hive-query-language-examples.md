@@ -393,6 +393,17 @@ WHERE a.customernumber = 205
                 WHERE c.customernumber = 205
         )
 );
+
+❌ Note: Nested subqueries with `NOT IN` are tricky in Hive. Alternate option is Windowing function.
+--
+SELECT 
+    customerNumber,
+    paymentDate,
+    amount
+FROM payments a
+JOIN payments_part b 
+  ON a.customernumber = b.customernumber
+ AND a.customernumber = (SELECT MAX(customernumber) FROM payments );
 ```
 
 ⚠️ Error Case:
@@ -402,6 +413,15 @@ FAILED: SemanticException [Error 10249]:
 Line 2:151 Unsupported SubQuery Expression 'paymentdate': 
 Nested SubQuery expressions are not supported.
 ```
+
+```sql
+!hive --version
+```
+
+🔑 Key Takeaways for Hive 2.3.9
+✅ Works: scalar subquery in SELECT, correlated subquery in WHERE.
+❌ Fails: subqueries in JOIN / ON, and deep multi-level nesting.
+✔️ Workaround: Always rewrite as inline view + join or CTE (WITH).
 
 ---
 
