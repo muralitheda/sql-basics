@@ -819,6 +819,12 @@ SELECT * FROM payments_part_trans;
 
 ### **Q24. Joins: Inner, Outer (Left, Right, Full), Semi, Anti, Self, Cross**
 
+<details>
+  <summary> Click to view the Join types</summary>
+  <img src="images/joins.png" alt="Diagram">
+</details>
+
+
 #### Insert sample data
 
 ```sql
