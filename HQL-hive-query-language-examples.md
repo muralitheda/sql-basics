@@ -743,7 +743,38 @@ ON pi.customernumber = p.customernumber;
 SELECT * 
 FROM payments_version 
 WHERE customernumber = 103;
+
+--Alternate
+INSERT INTO TABLE payments_version 
+SELECT p.customernumber,
+       COALESCE(maxversion,0),
+       checknumber,
+       paymentdate,
+       amount 
+FROM payments AS p
+LEFT OUTER JOIN (
+    SELECT customernumber, MAX(version) + 1  AS maxversion
+    FROM payments_version 
+    GROUP BY customernumber
+) AS pi 
+ON pi.customernumber = p.customernumber
+;
 ```
+
+| payments_version.customernumber | payments_version.version | payments_version.checknumber | payments_version.paymentdate | payments_version.amount |
+| :--- | :--- | :--- | :--- | :--- |
+| 103 | 0 | HQ336336 | 2016-10-19 | 6066.78 |
+| 103 | 0 | JM555205 | 2016-10-05 | 14571.44 |
+| 103 | 0 | OM314933 | 2016-10-18 | 1676.14 |
+| 103 | 0 | HQ336336 | 2016-10-19 | 6066.78 |
+| 103 | 0 | JM555205 | 2016-10-05 | 14571.44 |
+| 103 | 0 | OM314933 | 2016-10-18 | 1676.14 |
+| 103 | 1 | HQ336336 | 2016-10-19 | 6066.78 |
+| 103 | 1 | JM555205 | 2016-10-05 | 14571.44 |
+| 103 | 1 | OM314933 | 2016-10-18 | 1676.14 |
+| 103 | 1 | HQ336336 | 2016-10-19 | 6066.78 |
+| 103 | 1 | JM555205 | 2016-10-05 | 14571.44 |
+| 103 | 1 | OM314933 | 2016-10-18 | 1676.14 |
 
 ---
 
