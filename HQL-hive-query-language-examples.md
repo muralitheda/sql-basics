@@ -418,9 +418,9 @@ Nested SubQuery expressions are not supported.
 !hive --version
 ```
 
-🔑 Key Takeaways for Hive 2.3.9
-✅ Works: scalar subquery in SELECT, correlated subquery in WHERE.
-❌ Fails: subqueries in JOIN / ON, and deep multi-level nesting.
+🔑 Key Takeaways for Hive 2.3.9  
+✅ Works: scalar subquery in SELECT, correlated subquery in WHERE.  
+❌ Fails: subqueries in JOIN / ON, and deep multi-level nesting.  
 ✔️ Workaround: Always rewrite as inline view + join or CTE (WITH).
 
 ---
