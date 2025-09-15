@@ -484,12 +484,12 @@ INSERT INTO payments_part PARTITION(paymentdate='2016-10-30')
 VALUES (205,'HQ336436',52166.01);
 ```
 
-| Function | Explanation & Example |
-| :--- | :--- |
-| **`Cume_dist`** | Returns the cumulative distribution of a value, ranging from 0 to 1. It shows the proportion of values that are less than or equal to the current value. \<br/\>\<br/\> **Example:** In a list of 5 payments, the `Cume_dist` for the 3rd payment will be **0.6** (3/5). |
-| **`Rank`** | Assigns a rank to each value. If values are tied, they receive the same rank, and the next rank is skipped. \<br/\>\<br/\> **Example:** `(100, 90, 90, 80)` \<br/\>- **100** gets rank **1** \<br/\>- **90** gets rank **2** \<br/\>- **90** gets rank **2** \<br/\>- **80** gets rank **4** (skips 3) |
-| **`Row_number`** | Assigns a unique, continuous sequence number to each row in the result set, regardless of ties. \<br/\>\<br/\> **Example:** `(100, 90, 90, 80)` \<br/\>- **100** gets row number **1** \<br/\>- **90** gets row number **2** \<br/\>- **90** gets row number **3** \<br/\>- **80** gets row number **4** |
-| **`Dense_rank`** | Assigns a rank to each value. If values are tied, they receive the same rank, but the next rank is not skipped. This results in a continuous sequence of ranks. \<br/\>\<br/\> **Example:** `(100, 90, 90, 80)` \<br/\>- **100** gets dense rank **1** \<br/\>- **90** gets dense rank **2** \<br/\>- **90** gets dense rank **2** \<br/\>- **80** gets dense rank **3** |
+| Function | Explanation & Example                                                                                                                                                                                                                                                                                                      |
+| :--- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`Cume_dist`** | Returns the cumulative distribution of a value, ranging from 0 to 1. It shows the proportion of values that are less than or equal to the current value. \<br/\>\<br/\> **Example:** In a list of 5 payments, the `Cume_dist` for the 3rd payment will be **0.6** (3/5).                                                   |
+| **`Rank`** | Assigns a rank to each value. If values are tied, they receive the same rank, and the next rank is skipped. \<br/\>\<br/\> **Example:** `(100, 90, 90, 80)` \<br/\>- **100** gets rank **1**  **90** gets rank **2**  **90** gets rank **2** **80** gets rank **4** (skips 3)                                              |
+| **`Row_number`** | Assigns a unique, continuous sequence number to each row in the result set, regardless of ties. \<br/\>\<br/\> **Example:** `(100, 90, 90, 80)` \<br/\>- **100** gets row number **1**  **90** gets row number **2**  **90** gets row number **3**  **80** gets row number **4**                                           |
+| **`Dense_rank`** | Assigns a rank to each value. If values are tied, they receive the same rank, but the next rank is not skipped. This results in a continuous sequence of ranks.  **Example:** `(100, 90, 90, 80)`  **100** gets dense rank **1**  **90** gets dense rank **2**  **90** gets dense rank **2**  **80** gets dense rank **3** |
 
 #### Show the lowest payment, highest, number of payments made by the customer 205?
 
