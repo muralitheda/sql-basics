@@ -838,38 +838,49 @@ VALUES (1000,'HQ336336','2016-10-19','6066.78'),
 #### (a) Show only customers who didn’t make payments (e.g., customer 481)
 
 ```sql
-SELECT * 
-FROM payments 
-WHERE customernumber = 481;
+-- OUTER JOIN -> LEFT
+SELECT c.customernumber, c.customername, p.amount
+FROM customers c
+LEFT JOIN payments p
+       ON c.customernumber = p.customernumber
+WHERE c.customernumber IN (124,128);
 ```
 
 ```sql
-SELECT c.customernumber, c.customername, p.amount 
-FROM customers c 
-LEFT JOIN payments p 
-       ON c.customernumber = p.customernumber 
-WHERE c.customernumber IN (496,481);
-```
+-- LEFT SEMI
+SELECT c.customernumber, c.customername
+FROM customers c
+LEFT SEMI JOIN payments p
+       ON c.customernumber = p.customernumber
+WHERE c.customernumber IN (124,128);
 
-```sql
-SELECT c.customernumber, c.customername 
-FROM customers c 
-WHERE NOT EXISTS (
-    SELECT p.customernumber 
-    FROM payments p 
-    WHERE p.customernumber = c.customernumber
-)
-AND c.customernumber IN (496,481);
-```
-
-```sql
-SELECT c.customernumber, c.customername 
-FROM customers c 
-WHERE c.customernumber NOT IN (
-    SELECT customernumber 
+SELECT c.customernumber, c.customername
+FROM customers c
+WHERE EXISTS (
+    SELECT p.customernumber
     FROM payments p
+    WHERE c.customernumber = p.customernumber
 )
-AND c.customernumber IN (496,481);
+AND c.customernumber IN (124,128);
+```
+
+```sql
+-- LEFT ANTI
+SELECT c.customernumber, c.customername
+FROM customers c
+LEFT JOIN payments p
+       ON c.customernumber = p.customernumber
+WHERE p.customernumber IS NULL
+AND c.customernumber IN (124,128);
+
+SELECT c.customernumber, c.customername
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT p.customernumber
+    FROM payments p
+    WHERE c.customernumber = p.customernumber
+)
+AND c.customernumber IN (124,128);
 ```
 
 ---
