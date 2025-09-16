@@ -972,6 +972,11 @@ on (c.customernumber=p.customernumber);
 
 ---
 
+### Set Operations
+<details>
+  <summary> Click to view the Set types</summary>
+  <img src="images/Set.png" alt="Diagram">
+</details>
 ### **Q26. Show the customers who made the payment in a range of amounts (6000–10000 and 30000–50000).**
 
 **Concept:**
