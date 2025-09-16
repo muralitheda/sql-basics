@@ -757,8 +757,7 @@ LEFT OUTER JOIN (
     FROM payments_version 
     GROUP BY customernumber
 ) AS pi 
-ON pi.customernumber = p.customernumber
-;
+ON pi.customernumber = p.customernumber;
 ```
 
 | payments_version.customernumber | payments_version.version | payments_version.checknumber | payments_version.paymentdate | payments_version.amount |
@@ -821,10 +820,9 @@ SELECT * FROM payments_part_trans;
 
 <details>
   <summary> Click to view the Join types</summary>
-  <img src="images/joins.png" alt="Diagram">
-  <img src="images/joins-2.png" alt="Diagram">
+  <img src="images/joins.png" alt="Diagram"> 
 </details>
-
+<img src="images/joins-2.png" alt="Diagram">
 
 #### Insert sample data
 
