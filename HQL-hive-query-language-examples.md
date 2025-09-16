@@ -823,7 +823,7 @@ SELECT * FROM payments_part_trans;
   <img src="images/joins.png" alt="Diagram"> 
 </details>
 <details>
-  <summary> Click to view the ven diagram</summary>
+  <summary> Click to view the Venn diagram</summary>
   <img src="images/joins-2.png" alt="Diagram">
 </details>
 
