@@ -822,7 +822,11 @@ SELECT * FROM payments_part_trans;
   <summary> Click to view the Join types</summary>
   <img src="images/joins.png" alt="Diagram"> 
 </details>
-<img src="images/joins-2.png" alt="Diagram">
+<details>
+  <summary> Click to view the ven diagram</summary>
+  <img src="images/joins-2.png" alt="Diagram">
+</details>
+
 
 #### Insert sample data
 
