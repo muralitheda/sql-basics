@@ -822,6 +822,7 @@ SELECT * FROM payments_part_trans;
 <details>
   <summary> Click to view the Join types</summary>
   <img src="images/joins.png" alt="Diagram">
+  <img src="images/joins-2.png" alt="Diagram">
 </details>
 
 
