@@ -1318,6 +1318,19 @@ overwrite into table orderpages;
 
 ---
 
+## 📊 Pivot Functions / Techniques in Hive
+
+| **Category** | **Function / Technique** | **Description** | **Example Use** |
+|--------------|---------------------------|-----------------|-----------------|
+| **Conditional Aggregation** | `CASE WHEN ... THEN ...` | Converts row values into separate columns using conditional sums/counts. | `SUM(CASE WHEN product='A' THEN amount END) AS prod_A` |
+| **Aggregate Functions** | `SUM()`, `COUNT()`, `MAX()`, `MIN()` | Used inside `CASE` to pivot numeric/text measures. | `COUNT(CASE WHEN status='Active' THEN 1 END)` |
+| **Array Aggregation** | `COLLECT_LIST()`, `COLLECT_SET()` | Groups multiple row values into one array column. | `collect_list(product)` → `["A","B","C"]` |
+| **Map Aggregation** | `MAP_AGG()` (Hive 3.x) <br> or `str_to_map()` + `concat_ws()` | Creates key-value style pivot (dynamic columns stored in a map). | `MAP_AGG(product, amount)` → `{"A":100,"B":200}` |
+| **Lateral View** | `EXPLODE()`, `POSEXPLODE()` | Normally unpivots (columns → rows), but can be combined with aggregation to prepare data for pivoting. | Explode product array, then pivot with CASE. |
+| **Window Functions** | `ROW_NUMBER()`, `RANK()`, `DENSE_RANK()` | Can help when pivoting requires row-wise transformation (e.g., top-N products per customer). | `ROW_NUMBER() OVER(PARTITION BY cust ORDER BY amount DESC)` |
+| **Custom / External** | Custom UDFs or SparkSQL `PIVOT` (if using Spark on Hive tables) | Provides a direct pivot clause where supported. | `SELECT * FROM sales PIVOT (SUM(amount) FOR product IN ('A','B'));` |
+
+
 ### **Q34. How to collect array values as rows (unpivot array column)?**
 
 **Concept:**
