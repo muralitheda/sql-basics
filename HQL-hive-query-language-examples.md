@@ -1341,7 +1341,8 @@ overwrite into table orderpages;
 
 ```sql
 select explode(pagenavigation) 
-from orderpages;
+from orderpages
+where customernumber=201;
 ```
 
 ---
@@ -1356,7 +1357,8 @@ from orderpages;
 
 ```sql
 select posexplode(pagenavigation) 
-from orderpages;
+from orderpages
+where customernumber=201;
 ```
 
 ---
@@ -1370,9 +1372,17 @@ from orderpages;
 **Example:**
 
 ```sql
-select customernumber, comments, idx, pgnavigation_column 
+select customernumber, comments, exploded_tbl.idx, exploded_tbl.pgnavigation_column 
 from orderpages 
-lateral view posexplode(pagenavigation) exploded_tbl as idx, pgnavigation_column;
+lateral view posexplode(pagenavigation) exploded_tbl as idx, pgnavigation_column
+where customernumber=201;
+```
+
+```sql
+select customernumber,comments,exploded_tabl.pgnavigation_column
+from orderpages 
+lateral view explode(pagenavigation) exploded_tabl as pgnavigation_column
+where customernumber=201;
 ```
 
 ---
