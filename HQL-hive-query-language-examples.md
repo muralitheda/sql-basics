@@ -1175,18 +1175,29 @@ from (
 
 **Concept:**
 
-* Use `collect_list()` or `array_agg()` to gather column values into arrays.
+* Use `collect_list()` or  `collect_set()` or `array_agg()` (NOT SUPPORTED IN HIVE.USED IN BIGQUERY) to gather column values into arrays.
+
+| Function               | Description                                       | Keeps Duplicates?         | Preserves Order?             | Example                                              |
+| ---------------------- | ------------------------------------------------- | ------------------------- | ---------------------------- | ---------------------------------------------------- |
+| **collect\_list(col)** | Returns an **array** of all values for a group    | ✅ Yes                     | ✅ Yes (in order they appear) | `collect_list(customer_id)` → `[101, 102, 102, 103]` |
+| **collect\_set(col)**  | Returns an **array of unique values** for a group | ❌ No (removes duplicates) | ❌ Order not guaranteed       | `collect_set(customer_id)` → `[101, 102, 103]`       |
+
 
 **Example:**
 
 ```sql
 select customernumber, collect_list(phone) as grouped_phone 
 from customers 
-where customernumber in (103,112) 
+--where customernumber in (103,112) 
+group by customernumber;
+
+select customernumber, collect_set(phone) as grouped_phone 
+from customers 
+--where customernumber in (103,112) 
 group by customernumber;
 
 select customernumber, array_agg(phone) as grouped_phone 
-from curatedds.customers 
+from customers 
 where customernumber in (103,112) 
 group by customernumber;
 ```
