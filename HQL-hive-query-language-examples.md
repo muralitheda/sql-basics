@@ -1221,6 +1221,16 @@ group by customernumber;
 
 ### **Complex Types:**
 
+## 📊 Complex Data Types in Hive
+
+| **Complex Type** | **Definition** | **Example** | **Usage** |
+|------------------|----------------|-------------|-----------|
+| **ARRAY**        | An ordered collection of elements, all of the same type. | `ARRAY<string>` → `["A", "B", "C"]` | Store multiple values for a single field (e.g., list of phone numbers). |
+| **MAP**          | A key-value pair collection where keys are unique. | `MAP<string, int>` → `{"Math": 90, "English": 85}` | Store lookup-style data (e.g., subject → marks, product → price). |
+| **STRUCT**       | A collection of named fields, each with its own type (like a record). | `STRUCT<name:string, age:int>` → `{"name":"John", "age":30}` | Represent a nested record/object (e.g., customer profile). |
+| **UNIONTYPE**    | A field that can hold values of different types, but only one at a time. | `UNIONTYPE<int, string>` → `2` or `"two"` | Handle flexible schemas where type may vary. |
+
+
 ### **Q33. How to load semi-structured data (with arrays) into Hive?**
 
 **Concept:**
