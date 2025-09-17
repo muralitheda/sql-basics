@@ -1009,6 +1009,30 @@ on (c.customernumber=p.customernumber);
   <img src="images/Set.png" alt="Diagram">
 </details>
 
+
+Actually, the evidence is mixed / conditional. According to the Hive JIRA issue **HIVE-12764**, support for `INTERSECT`, `EXCEPT`, **and** `MINUS` was added (or planned) for Hive versions *around* **2.2+**. ([issues.apache.org][1])
+
+But there are some caveats:
+
+---
+
+## ⚠ What to Watch Out For
+
+* Even though Hive has JIRA issue stating they support `MINUS / EXCEPT`, some documentation & user reports still say that older Hive setups do *not* support `MINUS` directly. ([Stack Overflow][2])
+* The behavior (does it remove duplicates by default? can you use `ALL`/`DISTINCT` modifiers?) might depend on version and configuration. ([Apache Nightlies][3])
+
+---
+
+## ✅ Set Tabular 
+
+| Operator           | Keeps Duplicates?         | Hive Support (2.x, ≥2.2.0)  | Example Query (customers vs payments)                                           | Expected Result                  |
+| ------------------ | ------------------------- | --------------------------- | ------------------------------------------------------------------------------- | -------------------------------- |
+| **UNION**          | ❌ No (removes duplicates) | ✅ Yes                       | `SELECT customer_id FROM customers UNION SELECT customer_id FROM payments;`     | `{101, 102, 103, 104}`           |
+| **UNION ALL**      | ✅ Yes (keeps duplicates)  | ✅ Yes                       | `SELECT customer_id FROM customers UNION ALL SELECT customer_id FROM payments;` | `{101, 102, 103, 102, 103, 104}` |
+| **INTERSECT**      | ❌ No (removes duplicates) | ✅ Yes                       | `SELECT customer_id FROM customers INTERSECT SELECT customer_id FROM payments;` | `{102, 103}`                     |
+| **MINUS / EXCEPT** | ❌ No (removes duplicates) | ✅ Yes (if version supports) | `SELECT customer_id FROM customers MINUS SELECT customer_id FROM payments;`     | `{101}`                          |
+
+
 ### **Q26. Show the customers who made the payment in a range of amounts (6000–10000 and 30000–50000).**
 
 **Concept:**
@@ -1041,13 +1065,13 @@ where amount between 30000 and 50000;
 
 ```sql
 select p.customernumber, p.amount, 'NA' as country 
-from retail.payments p 
+from payments p 
 where p.amount between 6000 and 10000
 
 union all 
 
 select customernumber, 0 as amount, country 
-from retail.customers 
+from customers 
 where customernumber > 400;
 ```
 
