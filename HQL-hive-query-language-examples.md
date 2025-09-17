@@ -1365,11 +1365,19 @@ where customernumber=201;
 
 ### **Q36. Display customer number, comments, and pages navigated (array expansion with lateral view).**
 
-**Concept:**
 
-* Use **LATERAL VIEW + posexplode()** to flatten arrays with positions.
 
-**Example:**
+✅ **Key Notes**
+
+* **EXPLODE** → Converts each element in an array into its own row.
+* **POSEXPLODE** → Like EXPLODE, but also returns the **index/position** of each element (starting at 0).
+* **LATERAL VIEW** Both functions must be used with **LATERAL VIEW** in Hive. LATERAL VIEW lets Hive join the exploded rows back with the original row’s columns, so you can include other table fields (like customernumber or comments).
+* **Important:** Without LATERAL VIEW, you cannot combine the UDTF output with other columns — Hive will throw an error.
+
+```vbnet
+FAILED: SemanticException [Error 10081]: UDTF's are not supported outside the SELECT clause, nor nested in expressions.
+```
+
 
 ```sql
 select customernumber, comments, exploded_tbl.idx, exploded_tbl.pgnavigation_column 
@@ -1378,12 +1386,26 @@ lateral view posexplode(pagenavigation) exploded_tbl as idx, pgnavigation_column
 where customernumber=201;
 ```
 
+| customernumber | comments | exploded_tbl.idx | exploded_tbl.pgnavigation_column |
+|----------------|----------|-----------------|---------------------------------|
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | 0 | home |
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | 1 | adv-banner117 |
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | 2 | cart |
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | 3 | exit |
+
+
 ```sql
 select customernumber,comments,exploded_tabl.pgnavigation_column
 from orderpages 
 lateral view explode(pagenavigation) exploded_tabl as pgnavigation_column
 where customernumber=201;
 ```
+| customernumber | comments | exploded_tabl.pgnavigation_column |
+|----------------|----------|----------------------------------|
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | home |
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | adv-banner117 |
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | cart |
+| 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | exit |
 
 ---
 
