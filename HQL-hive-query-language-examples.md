@@ -707,6 +707,18 @@ WHERE customernumber = 205;
 
 ### **Q22. How to create version numbers for the payments made by the customers?**
 
+
+### Comparison of SCD Types
+
+| Feature | SCD Type 1: Overwrite | SCD Type 2: New Record | SCD Type 3: New Column |
+| :--- | :--- | :--- | :--- |
+| **Method** | Overwrites the existing record with new data. | Inserts a new row to store the changed value. The old row is marked as inactive. | Adds a new column to store the previous value. The existing column stores the current value. |
+| **History Preserved** | None. | Complete history. | Limited; only the single previous value. |
+| **Implementation** | Simplest to implement. | More complex; requires extra columns (`start_date`, `end_date`, `is_current`). | Moderately complex; requires an additional column. |
+| **Pros** | Very space-efficient; fast query performance. | Provides a full historical audit trail. Allows for "as-of-date" queries. | Space-efficient and easy to implement. Allows for simple queries of current and immediate previous state. |
+| **Cons** | Historical data is permanently lost. Cannot analyze trends over time. | Increases table size significantly; can impact performance on large datasets. | Cannot track a full history of changes; only works for one attribute. |
+
+
 #### (a) Without considering history (fresh versioning) (**SCD Type 1**)
 
 ```sql
@@ -766,6 +778,7 @@ LEFT OUTER JOIN (
 ) AS pi 
 ON pi.customernumber = p.customernumber;
 ```
+
 
 | payments_version.customernumber | payments_version.version | payments_version.checknumber | payments_version.paymentdate | payments_version.amount |
 | :--- | :--- | :--- | :--- | :--- |
