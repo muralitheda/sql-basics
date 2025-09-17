@@ -1188,14 +1188,28 @@ from (
 ```sql
 select customernumber, collect_list(phone) as grouped_phone 
 from customers 
---where customernumber in (103,112) 
+where customernumber in (103,112) 
 group by customernumber;
+```
+| customernumber | grouped_phone                        |
+|----------------|--------------------------------------|
+| 103            | ["40.32.2555", "40.32.2555"]         |
+| 112            | ["7025551838", "7025551838"]         |
 
+
+```sql
 select customernumber, collect_set(phone) as grouped_phone 
 from customers 
---where customernumber in (103,112) 
+where customernumber in (103,112) 
 group by customernumber;
+```
+| customernumber | grouped_phone        |
+|----------------|----------------------|
+| 103            | ["40.32.2555"]       |
+| 112            | ["7025551838"]       |
 
+
+```sql
 select customernumber, array_agg(phone) as grouped_phone 
 from customers 
 where customernumber in (103,112) 
