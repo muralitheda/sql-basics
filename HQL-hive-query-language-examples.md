@@ -1231,6 +1231,16 @@ group by customernumber;
 | **UNIONTYPE**    | A field that can hold values of different types, but only one at a time. | `UNIONTYPE<int, string>` → `2` or `"two"` | Handle flexible schemas where type may vary. |
 
 
+## 📊 Extracting Data from Hive Complex Types
+
+| **Complex Type** | **Extraction Method** | **Example Query** | **Result** |
+|------------------|------------------------|-------------------|-------------|
+| **ARRAY**        | Use **indexing** (0-based). | `SELECT phones[0] FROM customers;` | Returns the **first phone number** from the array. |
+| **MAP**          | Use **key lookup** with square brackets. | `SELECT marks['Math'] FROM students;` | Returns the **value for key "Math"**. |
+| **STRUCT**       | Use **dot notation** to access fields. | `SELECT profile.name, profile.age FROM users;` | Returns the **name and age** from the struct. |
+| **UNIONTYPE**    | Use **tag + value** extraction functions. <br> - `gettag()` → type index <br> - `getunionfield()` → actual value | `SELECT gettag(u), getunionfield(u, 1) FROM data;` | Returns the **active type index** and its value. |
+
+
 ### **Q33. How to load semi-structured data (with arrays) into Hive?**
 
 **Concept:**
