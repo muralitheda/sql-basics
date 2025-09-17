@@ -1110,7 +1110,7 @@ from customers;
 select strct.id 
 from (
     select struct(customernumber as id, customername as name) strct 
-    from curatedds.customers
+    from customers
 );
 ```
 
@@ -1143,6 +1143,60 @@ group by customernumber;
 **Concept:**
 
 * Use **collection items terminated by** clause for arrays.
+
+**Dataset**
+```bash
+--file location /home/hduser/orderstg
+
+112,Customer very concerned about the exact color of the models. There is high risk that he may dispute the order because there is a slight color mismatch,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+114,Can we deliver the new Ford Mustang models by end-of-quarter?,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+124,Custom shipping instructions were sent to warehouse,home$adv-banner117$cart$exit,1$2$3$4
+124,They want to reevaluate their terms agreement with Finance.,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+128,Check on availability.,home$about-us$profile$cart$order,1$2$3$4$5
+128,Customer very concerned about the exact color of the models. There is high risk that he may dispute the order because there is a slight color mismatch,google-search$billing$exit,1$2$3
+131,Difficult to negotiate with customer. We need more marketing materials,home$adv-banner114$cart$exit,1$2$3$4
+131,Order was mistakenly placed. The warehouse noticed the lack of documentation.,google-search$billing$exit,1$2$3
+131,They want to reevaluate their terms agreement with Finance.,google-search$billing$exit,1$2$3
+141, I need all the information I can get on our competitors.,google-search$billing$exit,1$2$3
+141,Cautious optimism. We have happy customers here  if we can keep them well stocked.  I need all the information I can get on the planned shippments of Porches,home$adv-banner114$cart$exit,1$2$3$4
+141,Customer doesn't like the colors and precision of the models.,google-search$billing$exit,1$2$3
+141,Customer requested that DHL is used for this shipping,home$about-us$profile$cart$exit,1$2$3$4$5
+141,Diffic ult to negotiate with customer. We need more marketing materials,google-search$billing$exit,1$2$3
+141,Disputed then Resolved on 3/15/2016. Customer doesn't like the craftsmaship of the models.,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+141,This customer found a better offer from one of our competitors. Will call back to renegotiate.,google-search$billing$exit,1$2$3
+144,Customer requested that ad materials (such as posters pamphlets) be included in the shippment,google-search$billing$exit,1$2$3
+144,The outstaniding balance for this customer exceeds their credit limit. Order will be shipped when a payment is received.,google-search$billing$exit,1$2$3
+145,Customer claims container with shipment was damaged during shipping and some items were missing. I am talking to FedEx about this.,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+148,They want to reevaluate their terms agreement with Finance.,google-search$billing$exit,1$2$3
+148,This order was on hold because customers's credit limit had been exceeded. Order will ship when payment is received,h ome$about-us$profile$cart$order$exit,1$2$3$4$5$6
+148,We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+151,Customer requested special shippment. The instructions were passed along to the warehouse,home$exit,1$2
+167,We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+171,Customer has worked with some of our vendors in the past and is aware of their MSRP,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+172,Customer requested that DHL is used for this shipping,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+173,Can we deliver the new Ford Mustang models by end-of-quarter?,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+175,Customer requested that DHL is used for this shipping,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
+186,Cautious optimism. We have happy customers here if we can keep them well stocked.  I need all the information I can get on the planned shippments of Porches,home$adv-banner117$cart$exit,1$2$3$4
+189,We must be cautions with this customer. Their VP of Sales resigned. Company may be heading down.,home$adv-banner117$cart$exit,1$2$3$4
+201,Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward  since they are very hard to please. We must cover the shipping fees.,home$adv-banner117$cart$exit,1$2$3$4
+202,Can we renegotiate this one?,home$adv-banner117$cart$exit,1$2$3$4
+202,Customer requested that FedEx Ground is used for this shipping,home$adv-banner117$cart$exit,1$2$3$4
+205,They want to reevaluate their terms agreement with Finance.,home$adv-banner117$cart$exit,1$2$3$4
+205,This order was disputed and resolved on 2/1/2016. Customer claimed that container with shipment was damaged. FedEx's investigation proved this wrong.,home$adv-banner117$cart$exit,1$2$3$4
+216,Customer has worked with some of our vendors in the past and is aware of their MSRP,home$adv-banner117$cart$exit,1$2$3$4
+216,Customer inquired about remote controlled models and gold models.,home$adv-banner117$cart$exit,1$2$3$4
+216,Customer is interested in buying more Ferrari models,home$adv-banner117$cart$exit,1$2$3$4
+240,Customer requested that ad materials (such as posters pamphlets) be included in the shippment,home$adv-banner117$cart$exit,1$2$3$4
+242,Custom shipping instructions sent to warehouse,home$adv-banner117$cart$exit,1$2$3$4
+242,Customer is interested in buying more Ferrari models,home$adv-banner117$cart$exit,1$2$3$4
+250,We must be cautions with this customer. Their VP of Sales resigned. Company may be heading down.,home$adv-banner117$cart$exit,1$2$3$4
+259,We must be cautions with this customer. Their VP of Sales resigned. Company may be heading down.,home$adv-banner117$cart$exit,1$2$3$4
+276,They want to reevaluate their terms agreement with Finance.,home$adv-banner117$cart$exit,1$2$3$4
+278,Cautious optimism. We have happy customers here if we can keep them well stocked.  I need all the information I can get on the planned shippments of Porches,home$adv-banner117$cart$exit,1$2$3$4
+278,Customer very concerned about the exact color of the models. There is high risk that he may dispute the order because there is a slight color mismatch,home$adv-banner117$cart$exit,1$2$3$4
+282,Can we renegotiate this one?,home$adv-banner117$cart$exit,1$2$3$4
+286,Check on availability.,home$adv-banner117$cart$exit,1$2$3$4
+```
 
 **Example:**
 
