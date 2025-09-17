@@ -1368,7 +1368,7 @@ where customernumber=201;
 
 
 ✅ **Key Notes**
-
+* **PIVOT** → PIVOT function is not available in Hive.
 * **EXPLODE** → Converts each element in an array into its own row.
 * **POSEXPLODE** → Like EXPLODE, but also returns the **index/position** of each element (starting at 0).
 * **LATERAL VIEW** Both functions must be used with **LATERAL VIEW** in Hive. LATERAL VIEW lets Hive join the exploded rows back with the original row’s columns, so you can include other table fields (like customernumber or comments).
