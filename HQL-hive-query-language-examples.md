@@ -665,7 +665,8 @@ making it ideal for creating unique identifiers for objects, sessions, or record
 
 ### **Q21. How to create surrogate key or sequence number?**
 
-➡️ **COALESCE()** is the standard and recommended function in Hive for handling null values. It evaluates the arguments in order and returns the first non-null value it finds. If all arguments are null, it returns null.
+➡️ **COALESCE()** is the standard and recommended function in Hive for handling null values. It evaluates the arguments in order and returns the first non-null value it finds. If all arguments are null, it returns null.  
+**Example** SELECT COALESCE(phone_number, alt_phone_number, 'N/A') AS contact_number FROM emp;
 
 ```sql
 
