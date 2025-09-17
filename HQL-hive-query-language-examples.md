@@ -1218,6 +1218,9 @@ group by customernumber;
 
 ---
 
+
+### **Complex Types:**
+
 ### **Q33. How to load semi-structured data (with arrays) into Hive?**
 
 **Concept:**
