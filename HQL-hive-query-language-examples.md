@@ -1009,20 +1009,8 @@ on (c.customernumber=p.customernumber);
 </details>
 
 
-Actually, the evidence is mixed / conditional. According to the Hive JIRA issue **HIVE-12764**, support for `INTERSECT`, `EXCEPT`, **and** `MINUS` was added (or planned) for Hive versions *around* **2.2+**. ([issues.apache.org][1])
 
-But there are some caveats:
-
----
-
-## ⚠ What to Watch Out For
-
-* Even though Hive has JIRA issue stating they support `MINUS / EXCEPT`, some documentation & user reports still say that older Hive setups do *not* support `MINUS` directly. ([Stack Overflow][2])
-* The behavior (does it remove duplicates by default? can you use `ALL`/`DISTINCT` modifiers?) might depend on version and configuration. ([Apache Nightlies][3])
-
----
-
-## ✅ Set Tabular 
+## ✅ Set Operators Difference 
 
 | Operator           | Keeps Duplicates?         | Hive Support (2.x, ≥2.2.0)  | Example Query (customers vs payments)                                           | Expected Result                  |
 | ------------------ | ------------------------- | --------------------------- | ------------------------------------------------------------------------------- | -------------------------------- |
@@ -1125,6 +1113,19 @@ minus
 select customernumber, checknumber, paymentdate, amount 
 from payments_version;
 ```
+
+## 📊 **SET Operations vs JOINs in Hive**
+
+| Criteria / Use Case                 | **SET Operations** (UNION, UNION ALL, INTERSECT, MINUS/EXCEPT)                                                                                                                | **JOINs** (INNER, LEFT, RIGHT, FULL)                                                                                                                    |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Purpose**                         | Combine results of *two complete queries*                                                                                                                                     | Combine *columns/attributes* from related tables                                                                                                        |
+| **Level of Operation**              | Works at the **row/result set level**                                                                                                                                         | Works at the **column/row level**                                                                                                                       |
+| **Duplicates**                      | Controlled: <br> - `UNION` removes duplicates <br> - `UNION ALL` keeps them <br> - `INTERSECT` keeps only common distinct rows <br> - `MINUS/EXCEPT` removes overlapping rows | By default, duplicates can appear depending on join type (especially `INNER JOIN` and `LEFT JOIN`)                                                      |
+| **Schema Requirement**              | Both queries must return **same number of columns** with compatible data types                                                                                                | Tables can have completely different schemas; join uses keys/conditions                                                                                 |
+| **Typical Usage**                   | - Get combined list of IDs from multiple sources <br> - Find common customers in both tables <br> - Get customers in A but not in B                                           | - Enrich data (customer details + payment info) <br> - Filter using relationships <br> - Complex analytics with multiple tables                         |
+| **Performance**                     | Simple when just combining sets; less shuffle than wide joins in some cases                                                                                                   | Can be more efficient when combining large related tables with indexes/partitions                                                                       |
+| **Example (Customers vs Payments)** | `SELECT customer_id FROM customers UNION SELECT customer_id FROM payments;` → all customers from both tables                                                                  | `SELECT c.customer_id, c.name, p.amount FROM customers c JOIN payments p ON c.customer_id = p.customer_id;` → enrich customer info with payment amounts |
+
 
 ---
 
