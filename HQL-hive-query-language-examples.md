@@ -1144,9 +1144,8 @@ group by customernumber;
 
 * Use **collection items terminated by** clause for arrays.
 
-**Dataset**
+**Dataset (Landing pad location => /home/hduser/orderstg)**
 ```bash
---file location /home/hduser/orderstg
 
 112,Customer very concerned about the exact color of the models. There is high risk that he may dispute the order because there is a slight color mismatch,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
 114,Can we deliver the new Ford Mustang models by end-of-quarter?,home$about-us$profile$cart$order$exit,1$2$3$4$5$6
