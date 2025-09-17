@@ -797,6 +797,17 @@ ON pi.customernumber = p.customernumber;
 
 ---
 
+**ACID** is an acronym representing four properties that guarantee the reliability of database transactions.
+
+Hive was not meant for ACID because it was built as a read-heavy, batch-oriented data warehouse on top of HDFS, which is immutable and not designed for frequent row-level transactions. ACID was added later, but Hive is still not a replacement for OLTP systems.
+
+| Property | What It Means | Analogy |
+| :--- | :--- | :--- |
+| **Atomicity** ⚛️ | All or nothing. A transaction is treated as a single, indivisible unit of work. | A bank transfer: either both debit and credit succeed, or the entire transaction fails. |
+| **Consistency** ✅ | A transaction moves the database from one valid state to another, maintaining all data integrity rules. | In a bank transfer, the total amount of money across all accounts must remain constant. |
+| **Isolation** 🔒 | Concurrent transactions don't interfere with each other. Each transaction appears to run by itself. | Multiple people can withdraw from the same account at the same time without the final balance being corrupted. |
+| **Durability** 💪 | Once a transaction is committed, its changes are permanent and will survive any system failures. | After a bank transfer is confirmed, the money has permanently moved, even if the system crashes. |
+
 ### **Q23. Update the data based on another table (using JOIN)?**
 
 ```sql
