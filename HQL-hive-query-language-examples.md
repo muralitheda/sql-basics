@@ -1573,7 +1573,7 @@ group by dept_name;
 ```sql
 select 
     first_value(salary) over(partition by dept_name order by salary) as first_sal,
-    last_value(salary) over(partition by dept_name order by salary) as last_sal
+    last_value(salary) over(partition by dept_name order by salary rows between unbounded preceeding unbounded following ) as last_sal
 from emp;
 ```
 
