@@ -1157,17 +1157,28 @@ having cnt > 1 and cnt2 > 1;
 
 * Use `named_struct` or `struct()` functions to group columns.
 
+| Feature              | `struct`                                          | `named_struct`                                                                 |
+|-----------------------|---------------------------------------------------|--------------------------------------------------------------------------------|
+| Definition style      | Implicit, usually defined in table schema or CAST | Explicit, created using function syntax with field names and values            |
+| Syntax                | `struct<field1:type, field2:type>`                | `named_struct('field1', value1, 'field2', value2)`                            |
+| Use case              | Define a column with structured fields            | Construct struct values dynamically inside queries                            |
+| Example – schema      | `CREATE TABLE t (addr STRUCT<city:STRING, zip:INT>)` | Not used in schema; only inside queries                                        |
+| Example – query       | `SELECT addr.city FROM t;`                        | `SELECT named_struct('city','NY','zip',10001) AS addr;`                        |
+| Flexibility           | Fixed at table definition                        | Fully dynamic, can be created on the fly in SELECT/INSERT                     |
+| When to use           | For predefined structured columns                 | For creating ad-hoc struct objects during query execution                     |
+
+
 **Example:**
 
 ```sql
 select named_struct("id", customernumber, "name", customername) 
 from customers;
 
-select strct.id 
+select strct.col1 as "id", strct.col2 as "name"
 from (
-    select struct(customernumber, customername ) strct 
+    select struct(customernumber, customername )  
     from customers
-);
+) as strct;
 ```
 
 ---
