@@ -1476,10 +1476,8 @@ CREATE TABLE user_data (
   >,
 
   -- Dynamic attributes (JSON key-values)
-  preferences MAP<STRING,STRING>,
+  preferences MAP<STRING,STRING>
 
-  -- Store original JSON as fallback
-  raw_json STRING
 )
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE;
@@ -1511,8 +1509,17 @@ FROM user_data;
 #### 🔹 Access raw JSON for unstructured analysis
 
 ```sql
+
+CREATE TABLE user_data_raw (
+  raw_json STRING
+)
+STORED AS TEXTFILE;
+
+LOAD DATA LOCAL INPATH '/home/hduser/user_data.json'
+INTO TABLE user_data_raw;
+
 SELECT get_json_object(raw_json, '$.raw_data.extra_field') AS extra_field
-FROM user_data;
+FROM user_data_raw;
 ```
 
 ---
