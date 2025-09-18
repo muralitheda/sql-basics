@@ -1427,9 +1427,8 @@ where customernumber=201;
 3. **Dynamic attributes** (unknown keys) → `MAP`.
 4. **Fallback for raw JSON** → store original JSON string.
 
----
 
-# 🚀 Steps to Store Dynamic, Nested JSON in Hive
+## 🚀 Steps to Store Dynamic, Nested JSON in Hive
 
 ### **1. Example JSON Input**
 
