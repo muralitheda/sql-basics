@@ -1431,6 +1431,7 @@ where customernumber=201;
 
   * **DISTRIBUTE BY + SORT BY** → Parallel sort with multiple reducers.
   * **CLUSTER BY** → Equivalent to `DISTRIBUTE BY + SORT BY` on same columns.
+  * **Note** ORDER BY uses **Global Sorting** after the data fetched from the multiple reducers. CLUSTER BY uses **Local Sorting** at the individual reducers level. So that it achieves the parallelism at the reducer level.
 * If only top records needed → use `LIMIT`.
 
 **Example:**
@@ -1460,14 +1461,14 @@ select * from payments order by customernumber, amount limit 100;
 **Concept:**
 
 * `split(string, delimiter)` → splits into array.
-* `concat_ws(delimiter, col1, col2, …)` → joins values with delimiter.
+* `concat_ws(delimiter, col1, col2, …)` → joins values with delimiter. (CONCAT WITH SEPERATOR)
 
 **Example:**
 
 ```sql
 select 
-    split("Inceptez Technologies"," ") as splitted,
-    concat_ws(" ","Inceptez","Technologies") as joined;
+    split("Welcome Home"," ") as splitted,
+    concat_ws(" ","Welcome","Home") as joined;
 ```
 
 ---
@@ -1548,7 +1549,7 @@ group by dept_name;
 **Concept:**
 
 * Pivot = Convert rows → columns (and vice versa).
-* In Hive: `explode`, `lateral view`, `pivot`.
+* In Hive: `explode`, `posexplode`,`lateral view`, `pivot`(not supported), `collection_list() & collection_set()` (for unpivot)
 * In Spark: `pivot()` in DataFrame API.
 
 ---
