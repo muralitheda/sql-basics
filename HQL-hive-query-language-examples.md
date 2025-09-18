@@ -1421,7 +1421,6 @@ where customernumber=201;
 
 ### **Q. How to store dynamic json file into Hive table using complex type**
 
-Perfect 👍 Let’s combine all 3 approaches into **one Hive table design** that can handle:
 
 1. **Fixed schema fields** (like `id`, `name`) → regular columns.
 2. **Nested & repeated JSON fields** → `STRUCT` / `ARRAY`.
