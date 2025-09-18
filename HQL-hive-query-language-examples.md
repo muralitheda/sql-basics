@@ -1435,27 +1435,16 @@ where customernumber=201;
 ```bash
 vi /home/hduser/user_data.json
 
-{
-  "id": 201,
-  "name": "John",
-  "contacts": {
-    "email": "john@example.com",
-    "phone": ["111-1111", "222-2222"]
-  },
-  "preferences": {
-    "color": "blue",
-    "size": "M"
-  },
-  "raw_data": {
-    "random_key": "random_value",
-    "extra_field": "something_new"
-  }
-}
+{"id":201,"name":"John","contacts":{"email":"john@example.com","phone":["111-1111","222-2222"]},"preferences":{"color":"blue","size":"M"},"raw_data":{"random_key":"random_value","extra_field":"something_new"}}
+{"id":202,"name":"Jane","contacts":{"email":"jane@example.com","phone":["333-3333","444-4444"]},"preferences":{"color":"red","size":"L"},"raw_data":{"random_key":"another_value","extra_field":"extra"}}
+
 ```
 
 ### **2. Hive Table Definition (Combined Approach)**
 
 ```sql
+DROP TABLE user_data;
+
 CREATE TABLE user_data (
   -- Fixed fields
   id INT,
@@ -1475,6 +1464,7 @@ CREATE TABLE user_data (
 )
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE;
+
 ```
 
 ### **3. Loading JSON Data**
