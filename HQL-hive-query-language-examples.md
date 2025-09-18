@@ -1697,7 +1697,7 @@ where rno = 1;
 ```sql
 select * 
 from txnsrecord 
-where txnid= (select max(txnid) from txnsrecord);
+where txnid in (select max(txnid) from txnsrecord);
 ```
 
 ---
