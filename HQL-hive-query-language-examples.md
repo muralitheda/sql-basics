@@ -1165,7 +1165,7 @@ from customers;
 
 select strct.id 
 from (
-    select struct(customernumber as id, customername as name) strct 
+    select struct(customernumber, customername ) strct 
     from customers
 );
 ```
