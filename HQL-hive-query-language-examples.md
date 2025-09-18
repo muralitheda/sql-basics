@@ -1432,6 +1432,25 @@ where customernumber=201;
 
 ### **1. Example JSON Input**
 
+```json
+{
+  "id": 201,
+  "name": "John",
+  "contacts": {
+    "email": "john@example.com",
+    "phone": ["111-1111", "222-2222"]
+  },
+  "preferences": {
+    "color": "blue",
+    "size": "M"
+  },
+  "raw_data": {
+    "random_key": "random_value",
+    "extra_field": "something_new"
+  }
+}
+```
+
 ```bash
 vi /home/hduser/user_data.json
 
