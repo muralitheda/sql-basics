@@ -1782,7 +1782,7 @@ inner join T2 on T1.custid=T2.custid;
 
 **Example (Temp Table):**
 
-### Hive Temporary Tables
+## 🚀 Hive Temporary Tables
 
 | Feature | Description |
 | :--- | :--- |
