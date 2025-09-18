@@ -1377,8 +1377,6 @@ where customernumber=201;
 
 ### **Q36. Display customer number, comments, and pages navigated (array expansion with lateral view).**
 
-
-
 ✅ **Key Notes**
 * **PIVOT** → PIVOT function is not available in Hive.
 * **EXPLODE** → Converts each element in an array into its own row.
@@ -1420,6 +1418,117 @@ where customernumber=201;
 | 201 | Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward since they are very hard to please. We must cover the shipping fees. | exit |
 
 ---
+
+### **Q. How to store dynamic json file into Hive table using complex type**
+
+Perfect 👍 Let’s combine all 3 approaches into **one Hive table design** that can handle:
+
+1. **Fixed schema fields** (like `id`, `name`) → regular columns.
+2. **Nested & repeated JSON fields** → `STRUCT` / `ARRAY`.
+3. **Dynamic attributes** (unknown keys) → `MAP`.
+4. **Fallback for raw JSON** → store original JSON string.
+
+---
+
+# 🚀 Steps to Store Dynamic, Nested JSON in Hive
+
+### **1. Example JSON Input**
+
+```bash
+vi /home/hduser/user_data.json
+
+{
+  "id": 201,
+  "name": "John",
+  "contacts": {
+    "email": "john@example.com",
+    "phone": ["111-1111", "222-2222"]
+  },
+  "preferences": {
+    "color": "blue",
+    "size": "M"
+  },
+  "raw_data": {
+    "random_key": "random_value",
+    "extra_field": "something_new"
+  }
+}
+```
+
+### **2. Hive Table Definition (Combined Approach)**
+
+```sql
+CREATE TABLE user_data (
+  -- Fixed fields
+  id INT,
+  name STRING,
+
+  -- Nested & repeated fields
+  contacts STRUCT<
+      email:STRING,
+      phone:ARRAY<STRING>
+  >,
+
+  -- Dynamic attributes (JSON key-values)
+  preferences MAP<STRING,STRING>,
+
+  -- Store original JSON as fallback
+  raw_json STRING
+)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE;
+```
+
+### **3. Loading JSON Data**
+
+```sql
+LOAD DATA LOCAL INPATH '/home/hduser/user_data.json' INTO TABLE user_data;
+```
+
+### **4. Query Examples**
+
+#### 🔹 Access fixed + nested fields
+
+```sql
+SELECT id, name, contacts.email, contacts.phone[0]
+FROM user_data;
+```
+
+#### 🔹 Access dynamic attributes
+
+```sql
+SELECT id, preferences['color'], preferences['size']
+FROM user_data;
+```
+
+#### 🔹 Access raw JSON for unstructured analysis
+
+```sql
+SELECT get_json_object(raw_json, '$.raw_data.extra_field') AS extra_field
+FROM user_data;
+```
+
+---
+
+### **5. Best Practices**
+
+* Use **ORC/Parquet** instead of text for better performance:
+
+  ```sql
+  CREATE TABLE user_data_parquet (...)
+  STORED AS PARQUET;
+  ```
+* If data volume is large → use **partitioning** (e.g., by `dt` or `region`).
+* For highly dynamic JSON → rely more on `MAP` + `raw_json`.
+* For stable JSON → push more into `STRUCT` and `ARRAY`.
+
+✅ With this design:
+
+* Query **structured fields** (fast, optimized).
+* Explore **dynamic attributes** (flexible).
+* Always fall back to **raw JSON** if schema evolves unexpectedly.
+---
+
 
 
 ### **Q37. Why is ORDER BY costly in Hive? How can you avoid using it?**
