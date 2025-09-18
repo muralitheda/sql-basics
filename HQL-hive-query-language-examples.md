@@ -1610,21 +1610,51 @@ from emp;
 
 * Used for reusing subqueries in a single query (acts like temporary table).
 
+```sql
+CREATE TABLE txnsrecord (
+  txnid STRING,
+  txn_date STRING,
+  custid STRING,
+  amount DECIMAL(10,2),
+  category STRING,
+  product STRING,
+  city STRING,
+  state STRING,
+  payment_type STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+INSERT INTO txnsrecord VALUES
+('00000105','12-24-2011','4003044',88.87,'Winter Sports','Downhill Skiing','Irvine','California','credit'),
+('00000106','10-07-2011','4007842',145.65,'Gymnastics','Pommel Horses','Chattanooga','Tennessee','credit'),
+('00000107','01-01-2011','4006017',177.45,'Games','Dice & Dice Sets','Orange','California','credit'),
+('00000108','03-20-2011','4007549',78.02,'Games','Dice Games','Saint Paul','Minnesota','credit'),
+('00000109','12-15-2011','4002154',52.55,'Outdoor Recreation','Camping & Backpacking & Hiking','Paterson','New Jersey','credit'),
+('00000110','04-18-2011','4001165',197.47,'Exercise & Fitness','Medicine Balls','Charleston','South Carolina','credit'),
+('00000111','03-05-2011','4000401',173.56,'Gymnastics','Gymnastics Protective Gear','Portland','Oregon','credit'),
+('00000112','07-03-2011','4007626',194.49,'Outdoor Recreation','Cycling','Flint','Michigan','credit'),
+('00000113','03-07-2011','4005597',11.88,'Dancing','Ballet Bars','Denton','Texas','credit'),
+('00000114','02-01-2011','4004525',173.51,'Puzzles','Jigsaw Puzzles','Dallas','Texas','credit');
+
+```
+
 **Example (CTE):**
 
 ```sql
 with T1 as (
-    select custno, category 
+    select custid, category 
     from txnrecords 
     where category='Games'
 ),
 T2 as (
-    select custno, category 
+    select custid, category 
     from txnrecords 
     where category='Puzzles'
 )
 select * from T1 
-inner join T2 on T1.custno=T2.custno;
+inner join T2 on T1.custid=T2.custid;
 ```
 
 **Example (Temp Table):**
@@ -1642,7 +1672,7 @@ inner join T2 on T1.custno=T2.custno;
 
 ```sql
 create temporary table temp1 as 
-select custno, category 
+select custid, category 
 from txnrecords 
 where category='Games';
 ```
@@ -1656,7 +1686,7 @@ where category='Games';
 ```sql
 select * 
 from (
-    select row_number() over(order by txnno desc) as rno, t.* 
+    select row_number() over(order by txnid desc) as rno, t.* 
     from txnrecords t
 ) tmp
 where rno = 1;
@@ -1667,7 +1697,7 @@ where rno = 1;
 ```sql
 select * 
 from txnrecords 
-where txnno = (select max(txnno) from txnrecords);
+where txnidd = (select max(txnid) from txnrecords);
 ```
 
 ---
