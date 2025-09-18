@@ -1097,12 +1097,13 @@ from payments;
 
 **Concept:**
 
-* **INTERSECT** → common rows between two datasets.
-* **MINUS** → rows in one dataset not present in the other.
+* **INTERSECT** → common rows between two datasets →  A∩B = A∪B − (A−B) − (B−A)
+* **MINUS** → rows in one dataset not present in the other → (A-B) = A - (A∩B)
 
 **Example:**
 
 ```sql
+
 select * from payments 
 intersect 
 select customernumber, checknumber, paymentdate, amount 
