@@ -707,7 +707,7 @@ WHERE customernumber = 205;
 ### **Q22. How to create version numbers for the payments made by the customers?**
 
 
-### Comparison of SCD Types
+## 🚀 Comparison of SCD Types
 
 | Feature | SCD Type 1: Overwrite | SCD Type 2: New Record | SCD Type 3: New Column |
 | :--- | :--- | :--- | :--- |
