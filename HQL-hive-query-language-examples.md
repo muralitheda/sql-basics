@@ -1629,6 +1629,17 @@ inner join T2 on T1.custno=T2.custno;
 
 **Example (Temp Table):**
 
+### Hive Temporary Tables
+
+| Feature | Description |  |
+| :--- | :--- | :--- |
+| **Physical Storage** | Hive temp tables use physical storage on **HDFS**, not memory. | 💾 |
+| **Session-Scoped** | They are strictly **session-scoped** and are only visible to the creating user in their current session. | ⏳ |
+| **Automatic Deletion** | The table and data are **automatically dropped** when the user's session ends. | 🗑️ |
+| **Temporary Definition** | Both the **table definition and its data are temporary** and are not persistent across sessions. | 📝 |
+| **Primary Use Case** | Ideal for storing **intermediate results** to simplify complex queries and improve readability. | 🛠️ |
+
+
 ```sql
 create temporary table temp1 as 
 select custno, category 
