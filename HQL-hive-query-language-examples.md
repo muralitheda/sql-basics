@@ -1645,12 +1645,12 @@ INSERT INTO txnsrecord VALUES
 ```sql
 with T1 as (
     select custid, category 
-    from txnrecords 
+    from txnsrecords 
     where category='Games'
 ),
 T2 as (
     select custid, category 
-    from txnrecords 
+    from txnsrecords 
     where category='Puzzles'
 )
 select * from T1 
@@ -1673,7 +1673,7 @@ inner join T2 on T1.custid=T2.custid;
 ```sql
 create temporary table temp1 as 
 select custid, category 
-from txnrecords 
+from txnsrecords 
 where category='Games';
 ```
 
@@ -1687,7 +1687,7 @@ where category='Games';
 select * 
 from (
     select row_number() over(order by txnid desc) as rno, t.* 
-    from txnrecords t
+    from txnsrecords t
 ) tmp
 where rno = 1;
 ```
@@ -1696,8 +1696,8 @@ where rno = 1;
 
 ```sql
 select * 
-from txnrecords 
-where txnidd = (select max(txnid) from txnrecords);
+from txnsrecords 
+where txnidd = (select max(txnid) from txnsrecords);
 ```
 
 ---
