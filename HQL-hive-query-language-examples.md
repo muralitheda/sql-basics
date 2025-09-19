@@ -254,6 +254,13 @@ having count(1) > 1;
 insert overwrite table payments_part partition (paymentdate)
 select distinct customernumber, checknumber, amount, paymentdate
 from payments_part;
+
+-- Alternate approach
+insert overwrite table payments_part partition (paymentdate)
+select customernumber, checknumber, amount, paymentdate
+from payments_part
+group by customernumber, checknumber, amount, paymentdate;
+
 ```
 
 **Enable Partition Strict Mode:**
@@ -266,6 +273,14 @@ INSERT OVERWRITE TABLE payments_part PARTITION (paymentdate='2023-10-21')
 SELECT customernumber, checknumber, amount
 FROM payments
 WHERE paymentdate = '2023-10-21';
+
+-- Removing duplicates
+INSERT OVERWRITE TABLE payments_part PARTITION (paymentdate='2023-10-21')
+SELECT customernumber, checknumber, amount
+FROM payments_part
+WHERE paymentdate = '2023-10-21'
+GROUP BY customernumber, checknumber, amount, paymentdate;
+
 ```
 
 ---
